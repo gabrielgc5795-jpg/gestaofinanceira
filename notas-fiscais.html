@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notas Fiscais - Grill Gestão</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header Profissional -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-chart-line"></i>
+          <span>Grill Gestão</span>
+        </div>
+        <p class="tagline">Sistema completo de gestão</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-label">Saldo Atual</span>
+          <span class="stat-value" id="header-saldo">R$ 0,00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value" id="header-transacoes">0</span>
+        </div>
+        <div class="theme-toggle">
+          <button onclick="toggleTheme()" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação das Abas -->
+  <nav class="tab-navigation">
+    <button class="tab-button" onclick="navegarPara('dashboard')">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <i class="fas fa-list"></i>
+      <span>Transações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('graficos')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Gráficos</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <i class="fas fa-file-alt"></i>
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('orcamento')">
+      <i class="fas fa-wallet"></i>
+      <span>Orçamento</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('metas')">
+      <i class="fas fa-bullseye"></i>
+      <span>Metas</span>
+    </button>
+    <button class="tab-button active" onclick="navegarPara('notas-fiscais')">
+      <i class="fas fa-receipt"></i>
+      <span>Notas Fiscais</span>
+    </button>
+  </nav>
+
+  <!-- Conteúdo das Notas Fiscais -->
+  <main class="main-content">
+    <section>
+      <h2>🧾 Gestão de Notas Fiscais</h2>
+      
+      <!-- Formulário de Cadastro -->
+      <div class="form-card">
+        <div class="card-header">
+          <i class="fas fa-plus-circle"></i>
+          <h3>Cadastrar Nota Fiscal</h3>
+        </div>
+        <form id="form-nota-fiscal" class="modern-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="numero-nota">
+                <i class="fas fa-hashtag"></i>
+                Número da Nota
+              </label>
+              <input type="text" id="numero-nota" placeholder="Ex: 000001" required>
+            </div>
+            <div class="form-group">
+              <label for="serie-nota">
+                <i class="fas fa-list-ol"></i>
+                Série
+              </label>
+              <input type="text" id="serie-nota" placeholder="Ex: 1" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="data-emissao">
+                <i class="fas fa-calendar"></i>
+                Data de Emissão
+              </label>
+              <input type="date" id="data-emissao" required>
+            </div>
+            <div class="form-group">
+              <label for="data-vencimento">
+                <i class="fas fa-calendar-check"></i>
+                Data de Vencimento
+              </label>
+              <input type="date" id="data-vencimento" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fornecedor">
+                <i class="fas fa-building"></i>
+                Fornecedor/Cliente
+              </label>
+              <input type="text" id="fornecedor" placeholder="Nome da empresa ou pessoa" required>
+            </div>
+            <div class="form-group">
+              <label for="cnpj-cpf">
+                <i class="fas fa-id-card"></i>
+                CNPJ/CPF
+              </label>
+              <input type="text" id="cnpj-cpf" placeholder="00.000.000/0000-00" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="valor-total">
+                <i class="fas fa-dollar-sign"></i>
+                Valor Total
+              </label>
+              <input type="number" id="valor-total" placeholder="0,00" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label for="tipo-nota">
+                <i class="fas fa-exchange-alt"></i>
+                Tipo
+              </label>
+              <select id="tipo-nota" required>
+                <option value="entrada">📥 Entrada (Compra)</option>
+                <option value="saida">📤 Saída (Venda)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="categoria-nota">
+                <i class="fas fa-tags"></i>
+                Categoria
+              </label>
+              <select id="categoria-nota">
+                <option value="alimentacao">🍽️ Alimentação</option>
+                <option value="transporte">🚗 Transporte</option>
+                <option value="lazer">🎮 Lazer</option>
+                <option value="saude">🏥 Saúde</option>
+                <option value="educacao">📚 Educação</option>
+                <option value="vestuario">👕 Vestuário</option>
+                <option value="casa">🏠 Casa</option>
+                <option value="investimentos">📈 Investimentos</option>
+                <option value="servicos">🔧 Serviços</option>
+                <option value="equipamentos">⚙️ Equipamentos</option>
+                <option value="outros">📦 Outros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="status-nota">
+                <i class="fas fa-check-circle"></i>
+                Status
+              </label>
+              <select id="status-nota">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="paga">✅ Paga</option>
+                <option value="vencida">❌ Vencida</option>
+                <option value="cancelada">🚫 Cancelada</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="observacoes">
+              <i class="fas fa-sticky-note"></i>
+              Observações
+            </label>
+            <textarea id="observacoes" placeholder="Observações adicionais..." rows="3"></textarea>
+          </div>
+          
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-save"></i>
+            Cadastrar Nota Fiscal
+          </button>
+        </form>
+      </div>
+      
+      <!-- Lista de Notas Fiscais -->
+      <div class="notas-section">
+        <div class="section-header">
+          <h3>📋 Notas Fiscais Cadastradas</h3>
+          <div class="filtros-notas">
+            <select id="filtro-status-notas">
+              <option value="">Todos os status</option>
+              <option value="pendente">Pendente</option>
+              <option value="paga">Paga</option>
+              <option value="vencida">Vencida</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+            <select id="filtro-tipo-notas">
+              <option value="">Todos os tipos</option>
+              <option value="entrada">Entrada</option>
+              <option value="saida">Saída</option>
+            </select>
+            <button onclick="aplicarFiltrosNotas()" class="filter-btn">🔍 Filtrar</button>
+            <button onclick="limparFiltrosNotas()" class="clear-btn">🗑️ Limpar</button>
+          </div>
+        </div>
+        
+        <div class="notas-stats">
+          <span id="total-notas">Total: 0 notas fiscais</span>
+          <span id="valor-total-notas">Valor total: R$ 0,00</span>
+          <span id="notas-vencidas">Vencidas: 0</span>
+        </div>
+        
+        <div id="lista-notas-fiscais" class="notas-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+  <script src="notas-fiscais.js"></script>
+  <script>
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      atualizarListaNotasFiscais();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Gestão Financeira</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-container {
+      background: var(--bg-primary);
+      border-radius: 1rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      max-width: 400px;
+      width: 100%;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .login-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .login-subtitle {
+      opacity: 0.9;
+      margin: 0.5rem 0 0 0;
+      font-size: 0.875rem;
+    }
+
+    .login-form {
+      padding: 2rem;
+    }
+
+    .form-field {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-field label {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      z-index: 1;
+    }
+
+    .form-field input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: var(--bg-primary);
+    }
+
+    .form-field input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .form-field input:focus + i {
+      color: var(--primary-color);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .forgot-password {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.875rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .demo-users {
+      background: var(--gray-50);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .demo-users h4 {
+      margin: 0 0 0.75rem 0;
+      color: var(--gray-700);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-user {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      background: white;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid var(--gray-200);
+    }
+
+    .demo-user:hover {
+      border-color: var(--primary-color);
+      transform: translateX(2px);
+    }
+
+    .demo-user:last-child {
+      margin-bottom: 0;
+    }
+
+    .demo-user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .demo-user-name {
+      font-weight: 500;
+      color: var(--gray-900);
+      font-size: 0.875rem;
+    }
+
+    .demo-user-profile {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .demo-user-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: white;
+    }
+
+    .profile-admin { background: #228B22; }
+    .profile-manager { background: #f59e0b; }
+    .profile-operator { background: #10b981; }
+    .profile-viewer { background: #6366f1; }
+
+    .version-info {
+      text-align: center;
+      padding: 1rem;
+      color: var(--gray-500);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    [data-theme="dark"] .login-container {
+      background: var(--gray-800);
+    }
+
+    [data-theme="dark"] .form-field input {
+      background: var(--gray-700);
+      border-color: var(--gray-600);
+      color: var(--gray-100);
+    }
+
+    [data-theme="dark"] .demo-users {
+      background: var(--gray-700);
+    }
+
+    [data-theme="dark"] .demo-user {
+      background: var(--gray-600);
+      border-color: var(--gray-500);
+    }
+
+    [data-theme="dark"] .version-info {
+      border-color: var(--gray-600);
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .login-form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <!-- Header do Login -->
+    <div class="login-header">
+      <div class="login-logo">
+        Gestão Financeira
+      </div>
+      <h1 class="login-title">Gestão Financeira</h1>
+      <p class="login-subtitle">Sistema Profissional de Gestão</p>
+    </div>
+
+    <!-- Formulário de Login -->
+    <form class="login-form" id="login-form">
+      <div class="form-field">
+        <label for="username">Usuário</label>
+        <div class="input-group">
+          <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Senha</label>
+        <div class="input-group">
+          <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="remember-me">
+          <input type="checkbox" id="remember-me" name="rememberMe">
+          <span>Lembrar de mim</span>
+        </label>
+        <a href="#" class="forgot-password">Esqueci a senha</a>
+      </div>
+
+      <button type="submit" class="login-btn">
+        <span class="btn-text">
+          Entrar
+        </span>
+      </button>
+
+      <!-- Usuários Demo -->
+      <div class="demo-users">
+        <h4>
+          Usuários de Demonstração
+        </h4>
+        
+        <div class="demo-user" onclick="fillDemoUser('admin', 'admin123')">
+          <div class="demo-user-info">
+            <div class="demo-user-name">Administrador</div>
+            <div class="demo-user-profile">Acesso total ao sistema</div>
+          </div>
+          <div class="demo-user-badge profile-admin">ADMIN</div>
+        </div>
+
+        <div class="demo-user" onclick="fillDemoUser('gerente', 'gerente123')">
+          <div class="demo-user-info">
+            <div class="demo-user-name">João Silva</div>
+            <div class="demo-user-profile">Gerente financeiro</div>
+          </div>
+          <div class="demo-user-badge profile-manager">GERENTE</div>
+        </div>
+
+        <div class="demo-user" onclick="fillDemoUser('operador', 'operador123')">
+          <div class="demo-user-info">
+            <div class="demo-user-name">Maria Santos</div>
+            <div class="demo-user-profile">Operadora do sistema</div>
+          </div>
+          <div class="demo-user-badge profile-operator">OPERADOR</div>
+        </div>
+
+        <div class="demo-user" onclick="fillDemoUser('viewer', 'viewer123')">
+          <div class="demo-user-info">
+            <div class="demo-user-name">Carlos Oliveira</div>
+            <div class="demo-user-profile">Apenas visualização</div>
+          </div>
+          <div class="demo-user-badge profile-viewer">VIEWER</div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Informações da Versão -->
+    <div class="version-info">
+      Gestão Financeira v2.0 - Sistema Profissional<br>
+      <i class="fas fa-shield-alt"></i> Autenticação Segura
+    </div>
+  </div>
+
+  <!-- Sistemas Profissionais -->
+  <script src="validation.js"></script>
+  <script src="notifications.js"></script>
+  <script src="loading-system.js"></script>
+  <script src="confirmation-system.js"></script>
+  <script src="backup-system.js"></script>
+  <script src="analytics-system.js"></script>
+  <script src="user-management.js"></script>
+  <script src="financial-control.js"></script>
+  <script src="clients-suppliers.js"></script>
+  <script src="inventory-management.js"></script>
+  <script src="service-orders.js"></script>
+  <script src="agenda-planning.js"></script>
+  <script src="auth-system.js"></script>
+  
+  <!-- Scripts do Sistema -->
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+
+  <script>
+    // Configuração de validação para o formulário de login
+    const loginValidationRules = {
+      username: [
+        { validator: 'required', message: 'Usuário é obrigatório' },
+        { validator: 'min_length', params: [3], message: 'Usuário deve ter pelo menos 3 caracteres' }
+      ],
+      password: [
+        { validator: 'required', message: 'Senha é obrigatória' },
+        { validator: 'min_length', params: [6], message: 'Senha deve ter pelo menos 6 caracteres' }
+      ]
+    };
+
+    // Preenche campos com usuário demo
+    function fillDemoUser(username, password) {
+      document.getElementById('username').value = username;
+      document.getElementById('password').value = password;
+      
+      // Remove estados de validação
+      document.querySelectorAll('.form-field').forEach(field => {
+        field.classList.remove('error', 'success');
+        const messages = field.querySelectorAll('.error-message, .success-message');
+        messages.forEach(msg => msg.remove());
+      });
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      // Carrega tema
+      loadTheme();
+      
+      // Se já está logado, redireciona
+      if (isAuthenticated()) {
+        window.location.href = 'dashboard.html';
+        return;
+      }
+      
+      // Configura validação do formulário
+      setupFormValidation('#login-form', loginValidationRules, {
+        onSubmit: async function(form) {
+          const formData = new FormData(form);
+          const username = formData.get('username');
+          const password = formData.get('password');
+          const rememberMe = formData.get('rememberMe') === 'on';
+
+          try {
+            // Realiza login com loading
+            const result = await withLoading(async () => {
+              return await login(username, password, rememberMe);
+            }, {
+              button: form.querySelector('.login-btn'),
+              title: 'Autenticando...',
+              message: 'Verificando credenciais'
+            });
+
+            if (!result.success) {
+              throw new Error(result.error);
+            }
+
+          } catch (error) {
+            // Erro já é tratado no sistema de auth
+            console.error('Erro no login:', error);
+          }
+        }
+      });
+      
+      // Foco no campo de usuário
+      document.getElementById('username').focus();
+      
+      // Rastreia visualização da página de login
+      if (typeof analytics !== 'undefined') {
+        analytics.trackEvent('login_page_view', {
+          referrer: document.referrer
+        }, 'auth');
+      }
+    });
+
+    // Intercepta tecla Enter nos campos
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && (e.target.id === 'username' || e.target.id === 'password')) {
+        e.preventDefault();
+        document.getElementById('login-form').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+</html>

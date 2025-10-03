@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes e Fornecedores - Gestão Financeira</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .clients-suppliers-page {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .page-tab {
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: all 0.2s ease;
+    }
+
+    .page-tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+
+    .page-tab:hover {
+      color: var(--primary-color);
+    }
+
+    .page-content {
+      display: none;
+    }
+
+    .page-content.active {
+      display: block;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .page-header h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 1.875rem;
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+      width: 3rem;
+      height: 3rem;
+      background: var(--primary-color);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+
+    .stat-content h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .stat-content p {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .filters-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: var(--bg-primary);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--gray-300);
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .filter-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+
+    .filter-btn.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+
+    .clients-grid, .suppliers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .client-card, .supplier-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .client-card:hover, .supplier-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .client-avatar, .supplier-avatar {
+      width: 3rem;
+      height: 3rem;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+
+    .client-info, .supplier-info {
+      flex: 1;
+    }
+
+    .client-info h4, .supplier-info h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--gray-900);
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .client-type, .supplier-category {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .client-status, .supplier-status {
+      display: flex;
+      align-items: center;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-inactive {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .client-details, .supplier-details {
+      margin-bottom: 1rem;
+    }
+
+    .client-details p, .supplier-details p {
+      margin: 0.5rem 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .client-details i, .supplier-details i {
+      width: 1rem;
+      color: var(--gray-400);
+    }
+
+    .client-tags, .supplier-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 0.25rem 0.5rem;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      background: var(--gray-50);
+      justify-content: flex-end;
+    }
+
+    .btn-icon {
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--gray-300);
+      background: var(--bg-primary);
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--gray-600);
+    }
+
+    .btn-icon:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+
+    .btn-icon.btn-danger:hover {
+      background: #fee2e2;
+      border-color: #228B22;
+      color: #228B22;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--bg-primary);
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content.large {
+      max-width: 700px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      background: none;
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--gray-400);
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .modal-form {
+      padding: 1.5rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-section h4 {
+      margin: 0 0 1rem 0;
+      color: var(--gray-900);
+      font-size: 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--gray-200);
+      padding-bottom: 0.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: var(--bg-primary);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
+    .btn-secondary {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--gray-300);
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .client-card,
+    [data-theme="dark"] .supplier-card {
+      background: var(--gray-800);
+      border-color: var(--gray-700);
+    }
+
+    [data-theme="dark"] .card-actions {
+      background: var(--gray-700);
+    }
+
+    [data-theme="dark"] .modal-content {
+      background: var(--gray-800);
+    }
+
+    [data-theme="dark"] .modal-header {
+      border-color: var(--gray-600);
+    }
+
+    [data-theme="dark"] .form-group input,
+    [data-theme="dark"] .form-group select,
+    [data-theme="dark"] .form-group textarea {
+      background: var(--gray-700);
+      border-color: var(--gray-600);
+      color: var(--gray-100);
+    }
+
+    @media (max-width: 768px) {
+      .clients-suppliers-page {
+        padding: 1rem;
+      }
+
+      .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .clients-grid, .suppliers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Profissional -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-chart-line"></i>
+          <span>Gestão Financeira</span>
+        </div>
+        <p class="tagline">Sistema completo de gestão</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-label">Saldo Atual</span>
+          <span class="stat-value" id="header-saldo">R$ 0,00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value" id="header-transacoes">0</span>
+        </div>
+        <div class="user-info">
+          <!-- Preenchido via JavaScript quando autenticado -->
+        </div>
+        <div class="theme-toggle">
+          <button onclick="toggleTheme()" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação das Abas -->
+  <nav class="tab-navigation">
+    <button class="tab-button" onclick="navegarPara('dashboard')">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <i class="fas fa-list"></i>
+      <span>Transações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('controle-financeiro')" data-permission="financial.view">
+      <i class="fas fa-wallet"></i>
+      <span>Financeiro</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('graficos')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Gráficos</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <i class="fas fa-file-alt"></i>
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('orcamento')">
+      <i class="fas fa-wallet"></i>
+      <span>Orçamento</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('metas')">
+      <i class="fas fa-bullseye"></i>
+      <span>Metas</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('notas-fiscais')">
+      <i class="fas fa-receipt"></i>
+      <span>Notas Fiscais</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('clientes-fornecedores')" data-permission="clients.view">
+      <i class="fas fa-address-book"></i>
+      <span>Clientes/Fornecedores</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('usuarios')" data-permission="users.view">
+      <i class="fas fa-users"></i>
+      <span>Usuários</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('configuracoes')">
+      <i class="fas fa-cog"></i>
+      <span>Configurações</span>
+    </button>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <div class="clients-suppliers-page">
+      <!-- Abas da Página -->
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="showTab('clients')">
+          <i class="fas fa-users"></i>
+          Clientes
+        </button>
+        <button class="page-tab" onclick="showTab('suppliers')">
+          <i class="fas fa-truck"></i>
+          Fornecedores
+        </button>
+      </div>
+
+      <!-- Conteúdo dos Clientes -->
+      <div class="page-content active" id="clients-content">
+        <div id="clients-container">
+          <!-- Conteúdo será inserido via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Conteúdo dos Fornecedores -->
+      <div class="page-content" id="suppliers-content">
+        <div id="suppliers-container">
+          <!-- Conteúdo será inserido via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sistemas Profissionais -->
+  <script src="validation.js"></script>
+  <script src="notifications.js"></script>
+  <script src="loading-system.js"></script>
+  <script src="confirmation-system.js"></script>
+  <script src="backup-system.js"></script>
+  <script src="analytics-system.js"></script>
+  <script src="user-management.js"></script>
+  <script src="auth-system.js"></script>
+  <script src="clients-suppliers.js"></script>
+  
+  <!-- Scripts do Sistema -->
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+
+  <script>
+    // Função para alternar entre abas
+    function showTab(tabName) {
+      // Remove active de todas as abas
+      document.querySelectorAll('.page-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.page-content').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      // Ativa a aba selecionada
+      event.target.classList.add('active');
+      document.getElementById(tabName + '-content').classList.add('active');
+    }
+
+    // Inicialização da página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Carrega tema
+      loadTheme();
+      
+      // Verifica autenticação
+      if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Verifica permissão
+      if (!hasPermission('clients.view')) {
+        showError('Acesso Negado', 'Você não tem permissão para acessar esta página.');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 2000);
+        return;
+      }
+
+      // Renderiza interfaces
+      if (typeof clientsSuppliers !== 'undefined') {
+        clientsSuppliers.renderClientsInterface();
+        clientsSuppliers.renderSuppliersInterface();
+      }
+
+      // Atualiza header
+      updateHeaderStats();
+      
+      // Marca aba ativa
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick')?.includes('clientes-fornecedores')) {
+          btn.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

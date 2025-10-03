@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações - Grill Gestão</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header Profissional -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-chart-line"></i>
+          <span>Grill Gestão</span>
+        </div>
+        <p class="tagline">Sistema completo de gestão</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-label">Saldo Atual</span>
+          <span class="stat-value" id="header-saldo">R$ 0,00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value" id="header-transacoes">0</span>
+        </div>
+        <div class="theme-toggle">
+          <button onclick="toggleTheme()" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação das Abas -->
+  <nav class="tab-navigation">
+    <button class="tab-button" onclick="navegarPara('dashboard')">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <i class="fas fa-list"></i>
+      <span>Transações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('graficos')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Gráficos</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <i class="fas fa-file-alt"></i>
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('orcamento')">
+      <i class="fas fa-wallet"></i>
+      <span>Orçamento</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('metas')">
+      <i class="fas fa-bullseye"></i>
+      <span>Metas</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('notas-fiscais')">
+      <i class="fas fa-receipt"></i>
+      <span>Notas Fiscais</span>
+    </button>
+    <button class="tab-button active" onclick="navegarPara('configuracoes')">
+      <i class="fas fa-cog"></i>
+      <span>Configurações</span>
+    </button>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1><i class="fas fa-cog"></i> Configurações do Sistema</h1>
+      <p>Gerencie backups, dados e preferências do sistema</p>
+    </div>
+
+    <!-- Seção de Backup -->
+    <section class="settings-section">
+      <div class="section-header">
+        <h2><i class="fas fa-shield-alt"></i> Backup e Segurança</h2>
+        <p>Proteja seus dados com backups automáticos e manuais</p>
+      </div>
+
+      <div class="settings-grid">
+        <!-- Estatísticas dos Dados -->
+        <div class="settings-card">
+          <h3><i class="fas fa-chart-pie"></i> Estatísticas dos Dados</h3>
+          <div class="stats-list" id="data-stats">
+            <!-- Preenchido via JavaScript -->
+          </div>
+        </div>
+
+        <!-- Ações de Backup -->
+        <div class="settings-card">
+          <h3><i class="fas fa-download"></i> Backup Manual</h3>
+          <div class="backup-actions">
+            <button class="primary-btn" onclick="criarBackupManual()">
+              <i class="fas fa-save"></i>
+              Criar Backup Agora
+            </button>
+            <button class="secondary-btn" onclick="exportarDados()">
+              <i class="fas fa-file-export"></i>
+              Exportar Dados
+            </button>
+          </div>
+        </div>
+
+        <!-- Importar Dados -->
+        <div class="settings-card">
+          <h3><i class="fas fa-upload"></i> Importar Dados</h3>
+          <div class="import-section">
+            <input type="file" id="backup-file" accept=".json" style="display: none;">
+            <button class="secondary-btn" onclick="document.getElementById('backup-file').click()">
+              <i class="fas fa-file-import"></i>
+              Selecionar Arquivo
+            </button>
+            <p class="help-text">Formatos aceitos: JSON</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lista de Backups -->
+    <section class="settings-section">
+      <div class="section-header">
+        <h2><i class="fas fa-history"></i> Histórico de Backups</h2>
+        <p>Visualize e gerencie seus backups salvos</p>
+      </div>
+
+      <div class="backup-list" id="backup-list">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Configurações Gerais -->
+    <section class="settings-section">
+      <div class="section-header">
+        <h2><i class="fas fa-sliders-h"></i> Configurações Gerais</h2>
+        <p>Personalize o comportamento do sistema</p>
+      </div>
+
+      <div class="settings-grid">
+        <!-- Tema -->
+        <div class="settings-card">
+          <h3><i class="fas fa-palette"></i> Aparência</h3>
+          <div class="setting-item">
+            <label>
+              <span>Tema do Sistema</span>
+              <select id="theme-selector" onchange="changeTheme(this.value)">
+                <option value="light">Claro</option>
+                <option value="dark">Escuro</option>
+                <option value="auto">Automático</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <!-- Notificações -->
+        <div class="settings-card">
+          <h3><i class="fas fa-bell"></i> Notificações</h3>
+          <div class="setting-item">
+            <label>
+              <input type="checkbox" id="notifications-enabled" checked>
+              <span>Ativar notificações</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label>
+              <input type="checkbox" id="auto-backup-notifications" checked>
+              <span>Notificar backups automáticos</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Backup Automático -->
+        <div class="settings-card">
+          <h3><i class="fas fa-clock"></i> Backup Automático</h3>
+          <div class="setting-item">
+            <label>
+              <input type="checkbox" id="auto-backup-enabled" checked>
+              <span>Ativar backup automático</span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <label>
+              <span>Frequência</span>
+              <select id="backup-frequency">
+                <option value="5">A cada 5 minutos</option>
+                <option value="15">A cada 15 minutos</option>
+                <option value="30">A cada 30 minutos</option>
+                <option value="60">A cada hora</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zona de Perigo -->
+    <section class="settings-section danger-zone">
+      <div class="section-header">
+        <h2><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h2>
+        <p>Ações irreversíveis que afetam todos os dados</p>
+      </div>
+
+      <div class="danger-actions">
+        <button class="danger-btn" onclick="limparTodosDados()">
+          <i class="fas fa-trash-alt"></i>
+          Limpar Todos os Dados
+        </button>
+        <button class="danger-btn" onclick="resetarSistema()">
+          <i class="fas fa-undo"></i>
+          Resetar Sistema
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sistemas Profissionais -->
+  <script src="validation.js"></script>
+  <script src="notifications.js"></script>
+  <script src="loading-system.js"></script>
+  <script src="confirmation-system.js"></script>
+  <script src="backup-system.js"></script>
+  
+  <!-- Scripts do Sistema -->
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+
+  <script>
+    // Funções específicas da página de configurações
+    
+    function atualizarEstatisticas() {
+      const stats = getDataStats();
+      const container = document.getElementById('data-stats');
+      
+      container.innerHTML = `
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value">${stats.transacoes}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Metas</span>
+          <span class="stat-value">${stats.metas}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Notas Fiscais</span>
+          <span class="stat-value">${stats.notasFiscais}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Backups</span>
+          <span class="stat-value">${stats.backups}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Tamanho dos Dados</span>
+          <span class="stat-value">${(stats.totalSize / 1024).toFixed(2)} KB</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Último Backup</span>
+          <span class="stat-value">${stats.lastBackup ? stats.lastBackup.toLocaleString('pt-BR') : 'Nunca'}</span>
+        </div>
+      `;
+    }
+
+    function atualizarListaBackups() {
+      const backups = getBackupList();
+      const container = document.getElementById('backup-list');
+      
+      if (backups.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>Nenhum backup encontrado</h3>
+            <p>Crie seu primeiro backup para proteger seus dados</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = backups.map(backup => `
+        <div class="backup-item">
+          <div class="backup-info">
+            <h4>${backup.name}</h4>
+            <p>
+              <i class="fas fa-calendar"></i>
+              ${new Date(backup.timestamp).toLocaleString('pt-BR')}
+            </p>
+            <p>
+              <i class="fas fa-database"></i>
+              ${(backup.size / 1024).toFixed(2)} KB
+            </p>
+          </div>
+          <div class="backup-actions">
+            <button class="secondary-btn small" onclick="restaurarBackup('${backup.timestamp}')">
+              <i class="fas fa-undo"></i>
+              Restaurar
+            </button>
+            <button class="secondary-btn small" onclick="exportarBackup('${backup.timestamp}')">
+              <i class="fas fa-download"></i>
+              Exportar
+            </button>
+            <button class="danger-btn small" onclick="excluirBackup('${backup.timestamp}')">
+              <i class="fas fa-trash"></i>
+              Excluir
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function criarBackupManual() {
+      try {
+        await withLoading(async () => {
+          const backup = createBackup(`Backup Manual - ${new Date().toLocaleString('pt-BR')}`);
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Simula processamento
+        }, {
+          global: true,
+          title: 'Criando Backup...',
+          message: 'Salvando seus dados'
+        });
+
+        showSuccess('Backup Criado!', 'Seus dados foram salvos com sucesso.');
+        atualizarEstatisticas();
+        atualizarListaBackups();
+      } catch (error) {
+        showError('Erro no Backup', 'Não foi possível criar o backup.');
+      }
+    }
+
+    async function exportarDados() {
+      try {
+        const backup = createBackup('Backup para Exportação');
+        exportBackup(backup, 'json');
+        showSuccess('Dados Exportados!', 'Arquivo de backup foi baixado.');
+      } catch (error) {
+        showError('Erro na Exportação', 'Não foi possível exportar os dados.');
+      }
+    }
+
+    async function restaurarBackup(timestamp) {
+      const backups = getBackupList();
+      const backup = backups.find(b => b.timestamp === timestamp);
+      
+      if (!backup) {
+        showError('Backup não encontrado', 'O backup selecionado não existe.');
+        return;
+      }
+
+      const confirmed = await confirmWarning(
+        'Restaurar Backup',
+        `Tem certeza que deseja restaurar o backup "${backup.name}"?`,
+        {
+          details: {
+            title: 'Atenção',
+            content: 'Todos os dados atuais serão substituídos pelos dados do backup. Um backup dos dados atuais será criado automaticamente.'
+          }
+        }
+      );
+
+      if (confirmed) {
+        try {
+          await withLoading(async () => {
+            await restoreBackup(backup);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          }, {
+            global: true,
+            title: 'Restaurando Backup...',
+            message: 'Recuperando seus dados'
+          });
+
+          showSuccess('Backup Restaurado!', 'Seus dados foram recuperados com sucesso.');
+          
+          // Recarrega a página para refletir os dados restaurados
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } catch (error) {
+          showError('Erro na Restauração', 'Não foi possível restaurar o backup.');
+        }
+      }
+    }
+
+    async function exportarBackup(timestamp) {
+      const backups = getBackupList();
+      const backup = backups.find(b => b.timestamp === timestamp);
+      
+      if (backup) {
+        exportBackup(backup, 'json');
+        showSuccess('Backup Exportado!', 'Arquivo foi baixado com sucesso.');
+      }
+    }
+
+    async function excluirBackup(timestamp) {
+      const confirmed = await confirmDelete('este backup');
+      
+      if (confirmed) {
+        let backups = getBackupList();
+        backups = backups.filter(b => b.timestamp !== timestamp);
+        localStorage.setItem('backupList', JSON.stringify(backups));
+        
+        showSuccess('Backup Excluído!', 'O backup foi removido.');
+        atualizarListaBackups();
+        atualizarEstatisticas();
+      }
+    }
+
+    async function limparTodosDados() {
+      const confirmed = await confirmWithText(
+        'Limpar Todos os Dados',
+        'Esta ação removerá TODOS os dados do sistema (transações, metas, orçamentos, etc.). Um backup será criado automaticamente antes da exclusão.',
+        'LIMPAR DADOS'
+      );
+
+      if (confirmed) {
+        try {
+          await withLoading(async () => {
+            await clearAllData();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }, {
+            global: true,
+            title: 'Limpando Dados...',
+            message: 'Removendo todas as informações'
+          });
+
+          showSuccess('Dados Limpos!', 'Todos os dados foram removidos. Um backup foi criado automaticamente.');
+          
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        } catch (error) {
+          showError('Erro', 'Não foi possível limpar os dados.');
+        }
+      }
+    }
+
+    async function resetarSistema() {
+      const confirmed = await confirmWithText(
+        'Resetar Sistema Completo',
+        'Esta ação removerá TODOS os dados E configurações, incluindo backups. O sistema voltará ao estado inicial.',
+        'RESETAR SISTEMA'
+      );
+
+      if (confirmed) {
+        try {
+          await withLoading(async () => {
+            // Remove todos os dados do localStorage
+            Object.keys(localStorage).forEach(key => {
+              if (key.startsWith('grill-') || 
+                  ['transacoes', 'orcamento', 'metas', 'notasFiscais', 'backupList', 'theme'].includes(key)) {
+                localStorage.removeItem(key);
+              }
+            });
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          }, {
+            global: true,
+            title: 'Resetando Sistema...',
+            message: 'Removendo todos os dados e configurações'
+          });
+
+          showSuccess('Sistema Resetado!', 'O sistema foi completamente resetado.');
+          
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        } catch (error) {
+          showError('Erro', 'Não foi possível resetar o sistema.');
+        }
+      }
+    }
+
+    function changeTheme(theme) {
+      if (theme === 'auto') {
+        // Detecta preferência do sistema
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        theme = prefersDark ? 'dark' : 'light';
+      }
+      
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      
+      const themeBtn = document.querySelector('.theme-btn i');
+      if (themeBtn) {
+        themeBtn.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Atualiza dados iniciais
+      atualizarEstatisticas();
+      atualizarListaBackups();
+      
+      // Configura tema atual
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      document.getElementById('theme-selector').value = currentTheme;
+      
+      // Listener para importar backup
+      document.getElementById('backup-file').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        try {
+          await withLoading(async () => {
+            const backup = await importBackup(file);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const confirmed = await confirmWarning(
+              'Importar Backup',
+              `Deseja restaurar o backup "${backup.name}"?`,
+              {
+                details: {
+                  title: 'Informações do Backup',
+                  content: `Data: ${new Date(backup.timestamp).toLocaleString('pt-BR')}\nTamanho: ${(backup.size / 1024).toFixed(2)} KB`
+                }
+              }
+            );
+            
+            if (confirmed) {
+              await restoreBackup(backup);
+              showSuccess('Backup Importado!', 'Dados foram restaurados com sucesso.');
+              setTimeout(() => window.location.reload(), 2000);
+            }
+          }, {
+            global: true,
+            title: 'Importando Backup...',
+            message: 'Processando arquivo'
+          });
+        } catch (error) {
+          showError('Erro na Importação', error.message || 'Não foi possível importar o backup.');
+        }
+        
+        // Limpa o input
+        e.target.value = '';
+      });
+      
+      // Atualiza estatísticas periodicamente
+      setInterval(() => {
+        atualizarEstatisticas();
+      }, 30000);
+    });
+  </script>
+
+  <style>
+    .settings-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header h2 {
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header p {
+      color: var(--gray-600);
+      margin: 0;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .settings-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .settings-card h3 {
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .backup-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .backup-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .backup-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .backup-info h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--gray-900);
+    }
+
+    .backup-info p {
+      margin: 0.25rem 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .backup-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .setting-item {
+      margin-bottom: 1rem;
+    }
+
+    .setting-item label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .setting-item input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+
+    .danger-zone {
+      border: 2px solid var(--error-color);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      background: var(--error-light);
+    }
+
+    .danger-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .danger-btn {
+      background: var(--error-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s ease;
+    }
+
+    .danger-btn:hover {
+      background: #228B22;
+    }
+
+    .small {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-500);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .help-text {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .backup-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+
+      .backup-actions {
+        justify-content: center;
+      }
+
+      .danger-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</body>
+</html>

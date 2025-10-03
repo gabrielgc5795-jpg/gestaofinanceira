@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda e Planejamento - Gestão Financeira</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .agenda-page {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .page-header h2 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 1.875rem;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Estatísticas */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+      width: 3rem;
+      height: 3rem;
+      background: var(--primary-color);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.25rem;
+    }
+
+    .stat-content h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .stat-content p {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    /* Seções */
+    .overdue-tasks-section, .today-events-section, .pending-tasks-section {
+      margin-bottom: 2rem;
+    }
+
+    .overdue-tasks-section h3, .today-events-section h3, .pending-tasks-section h3 {
+      margin: 0 0 1rem 0;
+      color: var(--gray-900);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .events-grid, .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Cards de Eventos */
+    .event-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .event-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--gray-50);
+    }
+
+    .event-time {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .time-start, .time-end {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .time-start {
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .event-category {
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .event-content {
+      padding: 1.5rem;
+    }
+
+    .event-content h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--gray-900);
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .event-content p {
+      margin: 0.5rem 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .event-content i {
+      margin-right: 0.5rem;
+      color: var(--gray-400);
+    }
+
+    .event-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      background: var(--gray-50);
+      justify-content: flex-end;
+    }
+
+    /* Cards de Tarefas */
+    .task-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .task-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-card.overdue {
+      border-left: 4px solid #228B22;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--gray-50);
+    }
+
+    .task-priority {
+      width: 4px;
+      height: 2rem;
+      border-radius: 2px;
+    }
+
+    .priority-low { background: #6b7280; }
+    .priority-normal { background: #3b82f6; }
+    .priority-high { background: #f59e0b; }
+    .priority-urgent { background: #228B22; }
+
+    .task-category {
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .task-content {
+      padding: 1.5rem;
+    }
+
+    .task-content h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--gray-900);
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .task-content p {
+      margin: 0.5rem 0;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .task-meta {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .task-meta p {
+      margin: 0.25rem 0;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .task-meta i {
+      margin-right: 0.5rem;
+      color: var(--gray-400);
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      background: var(--gray-50);
+      justify-content: flex-end;
+    }
+
+    .btn-icon {
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--gray-300);
+      background: var(--bg-primary);
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--gray-600);
+    }
+
+    .btn-icon:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+
+    .btn-icon.btn-danger:hover {
+      background: #fee2e2;
+      border-color: #228B22;
+      color: #228B22;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--bg-primary);
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content.large {
+      max-width: 700px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: var(--gray-900);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      background: none;
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--gray-400);
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .modal-form {
+      padding: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: var(--bg-primary);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
+    .btn-secondary {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--gray-300);
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-100);
+      border-color: var(--gray-400);
+    }
+
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .event-card,
+    [data-theme="dark"] .task-card {
+      background: var(--gray-800);
+      border-color: var(--gray-700);
+    }
+
+    [data-theme="dark"] .event-header,
+    [data-theme="dark"] .task-header,
+    [data-theme="dark"] .event-actions,
+    [data-theme="dark"] .task-actions {
+      background: var(--gray-700);
+    }
+
+    [data-theme="dark"] .modal-content {
+      background: var(--gray-800);
+    }
+
+    [data-theme="dark"] .modal-header {
+      border-color: var(--gray-600);
+    }
+
+    [data-theme="dark"] .form-group input,
+    [data-theme="dark"] .form-group select,
+    [data-theme="dark"] .form-group textarea {
+      background: var(--gray-700);
+      border-color: var(--gray-600);
+      color: var(--gray-100);
+    }
+
+    @media (max-width: 768px) {
+      .agenda-page {
+        padding: 1rem;
+      }
+
+      .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .header-actions {
+        justify-content: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .events-grid, .tasks-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Profissional -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-chart-line"></i>
+          <span>Gestão Financeira</span>
+        </div>
+        <p class="tagline">Sistema completo de gestão</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-label">Saldo Atual</span>
+          <span class="stat-value" id="header-saldo">R$ 0,00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value" id="header-transacoes">0</span>
+        </div>
+        <div class="user-info">
+          <!-- Preenchido via JavaScript quando autenticado -->
+        </div>
+        <div class="theme-toggle">
+          <button onclick="toggleTheme()" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação das Abas -->
+  <nav class="tab-navigation">
+    <button class="tab-button" onclick="navegarPara('dashboard')">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <i class="fas fa-list"></i>
+      <span>Transações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('controle-financeiro')" data-permission="financial.view">
+      <i class="fas fa-wallet"></i>
+      <span>Financeiro</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('graficos')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Gráficos</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <i class="fas fa-file-alt"></i>
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('orcamento')">
+      <i class="fas fa-wallet"></i>
+      <span>Orçamento</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('metas')">
+      <i class="fas fa-bullseye"></i>
+      <span>Metas</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('notas-fiscais')">
+      <i class="fas fa-receipt"></i>
+      <span>Notas Fiscais</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('estoque')" data-permission="inventory.view">
+      <i class="fas fa-boxes"></i>
+      <span>Estoque</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('ordens-servico')" data-permission="service-orders.view">
+      <i class="fas fa-tools"></i>
+      <span>Ordens de Serviço</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('agenda')" data-permission="agenda.view">
+      <i class="fas fa-calendar-alt"></i>
+      <span>Agenda</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('clientes-fornecedores')" data-permission="clients.view">
+      <i class="fas fa-address-book"></i>
+      <span>Clientes/Fornecedores</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('usuarios')" data-permission="users.view">
+      <i class="fas fa-users"></i>
+      <span>Usuários</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('configuracoes')">
+      <i class="fas fa-cog"></i>
+      <span>Configurações</span>
+    </button>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <div class="agenda-page">
+      <div id="agenda-dashboard-container">
+        <!-- Conteúdo será inserido via JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Sistemas Profissionais -->
+  <script src="validation.js"></script>
+  <script src="notifications.js"></script>
+  <script src="loading-system.js"></script>
+  <script src="confirmation-system.js"></script>
+  <script src="backup-system.js"></script>
+  <script src="analytics-system.js"></script>
+  <script src="user-management.js"></script>
+  <script src="financial-control.js"></script>
+  <script src="clients-suppliers.js"></script>
+  <script src="inventory-management.js"></script>
+  <script src="service-orders.js"></script>
+  <script src="agenda-planning.js"></script>
+  <script src="auth-system.js"></script>
+  
+  <!-- Scripts do Sistema -->
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+
+  <script>
+    // Inicialização da página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Carrega tema
+      loadTheme();
+      
+      // Verifica autenticação
+      if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Verifica permissão
+      if (!hasPermission('agenda.view')) {
+        showError('Acesso Negado', 'Você não tem permissão para acessar esta página.');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 2000);
+        return;
+      }
+
+      // Renderiza dashboard da agenda
+      if (typeof agendaPlanning !== 'undefined') {
+        agendaPlanning.renderAgendaDashboard();
+      }
+
+      // Atualiza header
+      updateHeaderStats();
+      
+      // Marca aba ativa
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick')?.includes('agenda')) {
+          btn.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Executivo - Grill Gestão</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Header Profissional -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-chart-line"></i>
+          <span>Grill Gestão</span>
+        </div>
+        <p class="tagline">Dashboard Executivo</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-label">Saldo Atual</span>
+          <span class="stat-value" id="header-saldo">R$ 0,00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value" id="header-transacoes">0</span>
+        </div>
+        <div class="user-info">
+          <!-- Preenchido via JavaScript quando autenticado -->
+        </div>
+        <div class="theme-toggle">
+          <button onclick="toggleTheme()" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação das Abas -->
+  <nav class="tab-navigation">
+    <button class="tab-button" onclick="navegarPara('dashboard')">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-button active" onclick="navegarPara('executive')">
+      <i class="fas fa-crown"></i>
+      <span>Executivo</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <i class="fas fa-list"></i>
+      <span>Transações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('graficos')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Gráficos</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <i class="fas fa-file-alt"></i>
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('orcamento')">
+      <i class="fas fa-wallet"></i>
+      <span>Orçamento</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('metas')">
+      <i class="fas fa-bullseye"></i>
+      <span>Metas</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('notas-fiscais')">
+      <i class="fas fa-receipt"></i>
+      <span>Notas Fiscais</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('configuracoes')">
+      <i class="fas fa-cog"></i>
+      <span>Configurações</span>
+    </button>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Resumo Executivo -->
+    <section class="executive-summary">
+      <div class="summary-header">
+        <h1><i class="fas fa-crown"></i> Dashboard Executivo</h1>
+        <div class="summary-actions">
+          <button class="secondary-btn" onclick="refreshExecutiveDashboard()">
+            <i class="fas fa-sync-alt"></i>
+            Atualizar
+          </button>
+          <button class="secondary-btn" onclick="exportExecutiveReport()">
+            <i class="fas fa-download"></i>
+            Exportar
+          </button>
+        </div>
+      </div>
+      
+      <div class="health-indicator" id="health-indicator">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Alertas Críticos -->
+    <section class="executive-alerts" id="executive-alerts" style="display: none;">
+      <h2><i class="fas fa-exclamation-triangle"></i> Alertas Críticos</h2>
+      <div class="alerts-container" id="alerts-container">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+
+    <!-- KPIs Principais -->
+    <section class="executive-kpis">
+      <h2><i class="fas fa-chart-line"></i> Indicadores Chave de Performance</h2>
+      <div class="kpis-grid" id="kpis-grid">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Gráficos Executivos -->
+    <section class="executive-charts">
+      <div class="charts-grid">
+        <div class="chart-container">
+          <h3><i class="fas fa-chart-area"></i> Tendência de KPIs</h3>
+          <canvas id="kpi-trend-chart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3><i class="fas fa-chart-pie"></i> Distribuição de Alertas</h3>
+          <canvas id="alerts-chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projeções -->
+    <section class="executive-projections">
+      <h2><i class="fas fa-crystal-ball"></i> Projeções e Tendências</h2>
+      <div class="projections-grid" id="projections-grid">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Benchmarks -->
+    <section class="executive-benchmarks">
+      <h2><i class="fas fa-balance-scale"></i> Comparação com Mercado</h2>
+      <div class="benchmarks-container" id="benchmarks-container">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Sistemas Profissionais -->
+  <script src="validation.js"></script>
+  <script src="notifications.js"></script>
+  <script src="loading-system.js"></script>
+  <script src="confirmation-system.js"></script>
+  <script src="backup-system.js"></script>
+  <script src="analytics-system.js"></script>
+  <script src="auth-system.js"></script>
+  <script src="executive-dashboard.js"></script>
+  
+  <!-- Scripts do Sistema -->
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+
+  <script>
+    let kpiTrendChart = null;
+    let alertsChart = null;
+
+    // Atualiza dashboard executivo
+    function updateExecutiveDashboard() {
+      const summary = getExecutiveSummary();
+      const kpis = getExecutiveKPIs();
+      const alerts = getExecutiveAlerts();
+      const projections = getExecutiveProjections();
+      
+      updateHealthIndicator(summary);
+      updateAlerts(alerts);
+      updateKPIs(kpis);
+      updateProjections(projections);
+      updateBenchmarks(kpis);
+      updateCharts(kpis, alerts);
+    }
+
+    // Atualiza indicador de saúde geral
+    function updateHealthIndicator(summary) {
+      const container = document.getElementById('health-indicator');
+      const healthColors = {
+        good: '#10b981',
+        warning: '#f59e0b', 
+        critical: '#B22222'
+      };
+      
+      const healthIcons = {
+        good: 'fas fa-check-circle',
+        warning: 'fas fa-exclamation-triangle',
+        critical: 'fas fa-times-circle'
+      };
+      
+      const healthMessages = {
+        good: 'Sistema operando normalmente',
+        warning: 'Atenção necessária em alguns indicadores',
+        critical: 'Ação imediata necessária'
+      };
+      
+      container.innerHTML = `
+        <div class="health-card" style="border-color: ${healthColors[summary.overall_health]}">
+          <div class="health-icon" style="color: ${healthColors[summary.overall_health]}">
+            <i class="${healthIcons[summary.overall_health]}"></i>
+          </div>
+          <div class="health-content">
+            <h3>Saúde Geral do Negócio</h3>
+            <p class="health-status" style="color: ${healthColors[summary.overall_health]}">
+              ${healthMessages[summary.overall_health]}
+            </p>
+            <div class="health-stats">
+              <div class="health-stat">
+                <span class="stat-number" style="color: #10b981">${summary.kpi_summary.good}</span>
+                <span class="stat-label">Bons</span>
+              </div>
+              <div class="health-stat">
+                <span class="stat-number" style="color: #f59e0b">${summary.kpi_summary.warning}</span>
+                <span class="stat-label">Atenção</span>
+              </div>
+              <div class="health-stat">
+                <span class="stat-number" style="color: #B22222">${summary.kpi_summary.critical}</span>
+                <span class="stat-label">Críticos</span>
+              </div>
+            </div>
+          </div>
+          <div class="health-timestamp">
+            Atualizado: ${new Date(summary.last_updated).toLocaleString('pt-BR')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Atualiza alertas
+    function updateAlerts(alerts) {
+      const section = document.getElementById('executive-alerts');
+      const container = document.getElementById('alerts-container');
+      
+      if (alerts.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      
+      section.style.display = 'block';
+      
+      container.innerHTML = alerts.map(alert => `
+        <div class="alert-card ${alert.type}">
+          <div class="alert-header">
+            <div class="alert-icon">
+              <i class="fas ${alert.type === 'critical' ? 'fa-exclamation-circle' : 'fa-exclamation-triangle'}"></i>
+            </div>
+            <div class="alert-content">
+              <h4>${alert.title}</h4>
+              <p>${alert.message}</p>
+            </div>
+            <div class="alert-timestamp">
+              ${new Date(alert.timestamp).toLocaleTimeString('pt-BR')}
+            </div>
+          </div>
+          ${alert.actions && alert.actions.length > 0 ? `
+            <div class="alert-actions">
+              <strong>Ações sugeridas:</strong>
+              <ul>
+                ${alert.actions.map(action => `<li>${action}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    // Atualiza KPIs
+    function updateKPIs(kpis) {
+      const container = document.getElementById('kpis-grid');
+      
+      container.innerHTML = Array.from(kpis.entries()).map(([key, kpi]) => `
+        <div class="kpi-card ${kpi.status}">
+          <div class="kpi-header">
+            <div class="kpi-icon" style="color: ${kpi.color}">
+              <i class="${kpi.icon}"></i>
+            </div>
+            <div class="kpi-trend">
+              <i class="fas ${getTrendIcon(kpi.trend)}"></i>
+            </div>
+          </div>
+          <div class="kpi-content">
+            <h3>${kpi.name}</h3>
+            <div class="kpi-value">
+              ${formatKPIValue(kpi.value, kpi.format)}
+            </div>
+            <div class="kpi-target">
+              Meta: ${formatKPIValue(kpi.target, kpi.format)}
+            </div>
+          </div>
+          <div class="kpi-status-bar">
+            <div class="status-indicator ${kpi.status}"></div>
+          </div>
+          ${kpi.benchmark ? `
+            <div class="kpi-benchmark">
+              <small>Mercado: ${formatKPIValue(kpi.benchmark.market, kpi.format)}</small>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    // Atualiza projeções
+    function updateProjections(projections) {
+      const container = document.getElementById('projections-grid');
+      
+      container.innerHTML = Array.from(projections.entries()).map(([key, projection]) => `
+        <div class="projection-card">
+          <h4>${getKPIName(key)}</h4>
+          <div class="projection-value">
+            ${formatProjectionValue(projection.next_month, key)}
+          </div>
+          <div class="projection-confidence confidence-${projection.confidence}">
+            Confiança: ${projection.confidence.toUpperCase()}
+          </div>
+          <div class="projection-trend">
+            <i class="fas ${getProjectionTrendIcon(projection.trend)}"></i>
+            ${projection.trend.replace('_', ' ')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Atualiza benchmarks
+    function updateBenchmarks(kpis) {
+      const container = document.getElementById('benchmarks-container');
+      
+      const benchmarkKPIs = Array.from(kpis.entries()).filter(([_, kpi]) => kpi.benchmark);
+      
+      container.innerHTML = benchmarkKPIs.map(([key, kpi]) => `
+        <div class="benchmark-card">
+          <h4>${kpi.name}</h4>
+          <div class="benchmark-comparison">
+            <div class="benchmark-item current">
+              <span class="benchmark-label">Atual</span>
+              <span class="benchmark-value">${formatKPIValue(kpi.value, kpi.format)}</span>
+            </div>
+            <div class="benchmark-item market">
+              <span class="benchmark-label">Mercado</span>
+              <span class="benchmark-value">${formatKPIValue(kpi.benchmark.market, kpi.format)}</span>
+            </div>
+            <div class="benchmark-item industry">
+              <span class="benchmark-label">Indústria</span>
+              <span class="benchmark-value">${formatKPIValue(kpi.benchmark.industry, kpi.format)}</span>
+            </div>
+          </div>
+          <div class="benchmark-performance ${getBenchmarkPerformance(kpi.value, kpi.benchmark.market, key)}">
+            ${getBenchmarkMessage(kpi.value, kpi.benchmark.market, key)}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Atualiza gráficos
+    function updateCharts(kpis, alerts) {
+      updateKPITrendChart(kpis);
+      updateAlertsChart(alerts);
+    }
+
+    // Atualiza gráfico de tendência de KPIs
+    function updateKPITrendChart(kpis) {
+      const ctx = document.getElementById('kpi-trend-chart').getContext('2d');
+      
+      if (kpiTrendChart) {
+        kpiTrendChart.destroy();
+      }
+      
+      const kpiArray = Array.from(kpis.entries());
+      
+      kpiTrendChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: kpiArray.map(([_, kpi]) => kpi.name),
+          datasets: [{
+            label: 'Atual',
+            data: kpiArray.map(([_, kpi]) => normalizeKPIValue(kpi.value, kpi.target)),
+            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+            borderColor: 'rgba(220, 38, 38, 0.8)',
+            pointBackgroundColor: 'rgba(220, 38, 38, 1)',
+          }, {
+            label: 'Meta',
+            data: kpiArray.map(() => 100),
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderColor: 'rgba(16, 185, 129, 0.8)',
+            pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 120
+            }
+          }
+        }
+      });
+    }
+
+    // Atualiza gráfico de alertas
+    function updateAlertsChart(alerts) {
+      const ctx = document.getElementById('alerts-chart').getContext('2d');
+      
+      if (alertsChart) {
+        alertsChart.destroy();
+      }
+      
+      const alertCounts = {
+        critical: alerts.filter(a => a.type === 'critical').length,
+        warning: alerts.filter(a => a.type === 'warning').length,
+        info: alerts.filter(a => a.type === 'info').length
+      };
+      
+      alertsChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Críticos', 'Avisos', 'Informações'],
+          datasets: [{
+            data: [alertCounts.critical, alertCounts.warning, alertCounts.info],
+            backgroundColor: ['#B22222', '#f59e0b', '#3b82f6'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    // Funções auxiliares
+    function getTrendIcon(trend) {
+      const icons = {
+        up: 'fa-arrow-up',
+        down: 'fa-arrow-down',
+        stable: 'fa-minus'
+      };
+      return icons[trend] || 'fa-minus';
+    }
+
+    function getProjectionTrendIcon(trend) {
+      const icons = {
+        increasing: 'fa-arrow-up',
+        decreasing: 'fa-arrow-down',
+        stable: 'fa-minus',
+        insufficient_data: 'fa-question'
+      };
+      return icons[trend] || 'fa-question';
+    }
+
+    function formatKPIValue(value, format) {
+      switch (format) {
+        case 'currency':
+          return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(value);
+        case 'percentage':
+          return `${value.toFixed(1)}%`;
+        case 'number':
+          return value.toFixed(1);
+        default:
+          return value.toString();
+      }
+    }
+
+    function formatProjectionValue(value, key) {
+      const kpi = executiveDashboard.kpis.get(key);
+      return formatKPIValue(value, kpi?.format || 'number');
+    }
+
+    function getKPIName(key) {
+      const kpi = executiveDashboard.kpis.get(key);
+      return kpi?.name || key;
+    }
+
+    function normalizeKPIValue(value, target) {
+      return Math.min(120, (value / target) * 100);
+    }
+
+    function getBenchmarkPerformance(current, market, key) {
+      const lowerIsBetter = ['expense_ratio', 'burn_rate'];
+      const isGood = lowerIsBetter.includes(key) ? current < market : current > market;
+      return isGood ? 'good' : 'poor';
+    }
+
+    function getBenchmarkMessage(current, market, key) {
+      const lowerIsBetter = ['expense_ratio', 'burn_rate'];
+      const diff = Math.abs(current - market);
+      const percentage = (diff / market * 100).toFixed(1);
+      
+      if (lowerIsBetter.includes(key)) {
+        return current < market ? 
+          `${percentage}% melhor que o mercado` : 
+          `${percentage}% pior que o mercado`;
+      } else {
+        return current > market ? 
+          `${percentage}% melhor que o mercado` : 
+          `${percentage}% pior que o mercado`;
+      }
+    }
+
+    // Funções de ação
+    function refreshExecutiveDashboard() {
+      showLoading('Atualizando Dashboard', 'Recalculando KPIs e métricas...');
+      
+      setTimeout(() => {
+        updateExecutiveDashboard();
+        hideLoading();
+        showSuccess('Dashboard Atualizado!', 'Todos os indicadores foram recalculados.');
+      }, 1500);
+    }
+
+    function exportExecutiveReport() {
+      const summary = getExecutiveSummary();
+      const kpis = getExecutiveKPIs();
+      const alerts = getExecutiveAlerts();
+      
+      const report = {
+        timestamp: new Date().toISOString(),
+        summary,
+        kpis: Object.fromEntries(kpis),
+        alerts
+      };
+      
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `executive-report-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showSuccess('Relatório Exportado!', 'Arquivo baixado com sucesso.');
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Verifica permissão para dashboard executivo
+      if (!hasPermission('executive.view')) {
+        showError('Acesso Negado', 'Você não tem permissão para acessar o dashboard executivo.');
+        setTimeout(() => navegarPara('dashboard'), 2000);
+        return;
+      }
+      
+      updateExecutiveDashboard();
+      
+      // Atualização automática a cada 30 segundos
+      setInterval(updateExecutiveDashboard, 30000);
+    });
+
+    // Listener para atualizações do dashboard executivo
+    window.addEventListener('executiveDashboardUpdate', function(event) {
+      const { kpis, alerts, projections } = event.detail;
+      updateHealthIndicator(getExecutiveSummary());
+      updateAlerts(alerts);
+      updateKPIs(kpis);
+      updateProjections(projections);
+      updateBenchmarks(kpis);
+      updateCharts(kpis, alerts);
+    });
+  </script>
+
+  <style>
+    /* Estilos específicos do dashboard executivo */
+    .executive-summary {
+      margin-bottom: 2rem;
+    }
+
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-header h1 {
+      color: var(--gray-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .summary-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .health-card {
+      background: var(--bg-primary);
+      border: 2px solid var(--gray-200);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .health-icon {
+      font-size: 3rem;
+    }
+
+    .health-content h3 {
+      margin: 0 0 0.5rem 0;
+      color: var(--gray-900);
+    }
+
+    .health-status {
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .health-stats {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .health-stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .health-timestamp {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .executive-alerts {
+      margin-bottom: 2rem;
+    }
+
+    .alerts-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .alert-card {
+      background: var(--bg-primary);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      border-left: 4px solid;
+    }
+
+    .alert-card.critical {
+      border-left-color: var(--error-color);
+      background: var(--error-light);
+    }
+
+    .alert-card.warning {
+      border-left-color: var(--warning-color);
+      background: var(--warning-light);
+    }
+
+    .alert-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .alert-icon {
+      font-size: 1.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .alert-card.critical .alert-icon {
+      color: var(--error-color);
+    }
+
+    .alert-card.warning .alert-icon {
+      color: var(--warning-color);
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-content h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--gray-900);
+    }
+
+    .alert-content p {
+      margin: 0;
+      color: var(--gray-700);
+    }
+
+    .alert-timestamp {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .alert-actions {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .alert-actions ul {
+      margin: 0.5rem 0 0 0;
+      padding-left: 1.5rem;
+    }
+
+    .kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card.critical {
+      border-color: var(--error-color);
+    }
+
+    .kpi-card.warning {
+      border-color: var(--warning-color);
+    }
+
+    .kpi-card.good {
+      border-color: var(--success-color);
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .kpi-icon {
+      font-size: 2rem;
+    }
+
+    .kpi-trend {
+      font-size: 1.25rem;
+      color: var(--gray-400);
+    }
+
+    .kpi-content h3 {
+      margin: 0 0 0.75rem 0;
+      color: var(--gray-700);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .kpi-target {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .kpi-status-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .status-indicator {
+      height: 100%;
+      width: 100%;
+    }
+
+    .status-indicator.good {
+      background: var(--success-color);
+    }
+
+    .status-indicator.warning {
+      background: var(--warning-color);
+    }
+
+    .status-indicator.critical {
+      background: var(--error-color);
+    }
+
+    .kpi-benchmark {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .chart-container {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .chart-container h3 {
+      margin: 0 0 1rem 0;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-container canvas {
+      height: 300px !important;
+    }
+
+    .projections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .projection-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .projection-card h4 {
+      margin: 0 0 0.75rem 0;
+      color: var(--gray-700);
+      font-size: 0.875rem;
+    }
+
+    .projection-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .projection-confidence {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .confidence-high {
+      background: var(--success-light);
+      color: var(--success-color);
+    }
+
+    .confidence-medium {
+      background: var(--warning-light);
+      color: var(--warning-color);
+    }
+
+    .confidence-low {
+      background: var(--error-light);
+      color: var(--error-color);
+    }
+
+    .projection-trend {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .benchmarks-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .benchmark-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+
+    .benchmark-card h4 {
+      margin: 0 0 1rem 0;
+      color: var(--gray-900);
+    }
+
+    .benchmark-comparison {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .benchmark-item {
+      text-align: center;
+    }
+
+    .benchmark-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-bottom: 0.25rem;
+    }
+
+    .benchmark-value {
+      display: block;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .benchmark-performance {
+      text-align: center;
+      font-size: 0.875rem;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+    }
+
+    .benchmark-performance.good {
+      background: var(--success-light);
+      color: var(--success-color);
+    }
+
+    .benchmark-performance.poor {
+      background: var(--error-light);
+      color: var(--error-color);
+    }
+
+    @media (max-width: 768px) {
+      .summary-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+
+      .health-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .health-stats {
+        justify-content: center;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-container canvas {
+        height: 250px !important;
+      }
+    }
+  </style>
+</body>
+</html>

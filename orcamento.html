@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento - Grill Gestão</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header Profissional -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-chart-line"></i>
+          <span>Grill Gestão</span>
+        </div>
+        <p class="tagline">Sistema completo de gestão</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-label">Saldo Atual</span>
+          <span class="stat-value" id="header-saldo">R$ 0,00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Transações</span>
+          <span class="stat-value" id="header-transacoes">0</span>
+        </div>
+        <div class="theme-toggle">
+          <button onclick="toggleTheme()" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navegação das Abas -->
+  <nav class="tab-navigation">
+    <button class="tab-button" onclick="navegarPara('dashboard')">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <i class="fas fa-list"></i>
+      <span>Transações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('graficos')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Gráficos</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <i class="fas fa-file-alt"></i>
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button active" onclick="navegarPara('orcamento')">
+      <i class="fas fa-wallet"></i>
+      <span>Orçamento</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('metas')">
+      <i class="fas fa-bullseye"></i>
+      <span>Metas</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('notas-fiscais')">
+      <i class="fas fa-receipt"></i>
+      <span>Notas Fiscais</span>
+    </button>
+  </nav>
+
+  <!-- Conteúdo do Orçamento -->
+  <main class="main-content">
+    <section>
+      <h2>💰 Orçamento Mensal</h2>
+      <div class="orcamento-form">
+        <h3>Definir Limites por Categoria</h3>
+        <div id="categorias-orcamento"></div>
+        <button onclick="salvarOrcamento()" class="save-btn">💾 Salvar Orçamento</button>
+      </div>
+      <div class="orcamento-status">
+        <h3>Status do Orçamento</h3>
+        <div id="status-orcamento"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="daTA.js"></script>
+  <script src="common.js"></script>
+  <script src="advanced-features.js"></script>
+  <script>
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      // Aguardar um pouco para garantir que os elementos estão renderizados
+      setTimeout(() => {
+        inicializarOrcamento();
+        atualizarStatusOrcamento();
+      }, 100);
+    });
+  </script>
+</body>
+</html>

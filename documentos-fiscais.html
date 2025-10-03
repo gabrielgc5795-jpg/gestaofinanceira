@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentos Fiscais - Gestão Financeira</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-file-invoice"></i> Gestão Financeira</h1>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                    <a href="documentos-fiscais.html" class="nav-link active">
+                        <i class="fas fa-file-invoice"></i> Documentos Fiscais
+                    </a>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="page-header">
+                <h2><i class="fas fa-file-invoice"></i> Documentos Fiscais</h2>
+                <p>Gerencie NF-e, NFS-e, boletos e documentos fiscais</p>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="stats-grid" id="statsContainer">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalDocumentos">0</h3>
+                        <p>Total de Documentos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="documentosAutorizados">0</h3>
+                        <p>Autorizados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="documentosPendentes">0</h3>
+                        <p>Pendentes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="valorTotal">R$ 0,00</h3>
+                        <p>Valor Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros e Ações -->
+            <div class="filters-section">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="filtroTipo">Tipo:</label>
+                        <select id="filtroTipo">
+                            <option value="">Todos</option>
+                            <option value="nfe">NF-e</option>
+                            <option value="nfse">NFS-e</option>
+                            <option value="boleto">Boleto</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroStatus">Status:</label>
+                        <select id="filtroStatus">
+                            <option value="">Todos</option>
+                            <option value="rascunho">Rascunho</option>
+                            <option value="validado">Validado</option>
+                            <option value="enviado">Enviado</option>
+                            <option value="autorizado">Autorizado</option>
+                            <option value="cancelado">Cancelado</option>
+                            <option value="rejeitado">Rejeitado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroDataInicio">Data Início:</label>
+                        <input type="date" id="filtroDataInicio">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroDataFim">Data Fim:</label>
+                        <input type="date" id="filtroDataFim">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroNumero">Número:</label>
+                        <input type="text" id="filtroNumero" placeholder="Digite o número">
+                    </div>
+                    <button class="btn btn-primary" onclick="aplicarFiltros()">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-success" onclick="abrirModalNovoDocumento()">
+                        <i class="fas fa-plus"></i> Novo Documento
+                    </button>
+                    <button class="btn btn-info" onclick="exportarCSV()">
+                        <i class="fas fa-download"></i> Exportar CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="abrirConfiguracoes()">
+                        <i class="fas fa-cog"></i> Configurações
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista de Documentos -->
+            <div class="table-container">
+                <table class="table" id="tabelaDocumentos">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Número</th>
+                            <th>Série</th>
+                            <th>Data Emissão</th>
+                            <th>Destinatário</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaDocumentosBody">
+                        <!-- Documentos serão carregados aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Novo Documento -->
+    <div class="modal" id="modalNovoDocumento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-invoice"></i> Novo Documento Fiscal</h3>
+                <button class="btn-close" onclick="fecharModal('modalNovoDocumento')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formNovoDocumento">
+                    <div class="form-group">
+                        <label for="tipoDocumento">Tipo do Documento:</label>
+                        <select id="tipoDocumento" onchange="carregarTemplate()" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="nfe">NF-e (Nota Fiscal Eletrônica)</option>
+                            <option value="nfse">NFS-e (Nota Fiscal de Serviços)</option>
+                            <option value="boleto">Boleto Bancário</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="templateDocumento">Template:</label>
+                        <select id="templateDocumento" required>
+                            <option value="">Selecione um template</option>
+                        </select>
+                    </div>
+                    <div id="camposDocumento">
+                        <!-- Campos dinâmicos baseados no template -->
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModal('modalNovoDocumento')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Salvar Documento
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Documento -->
+    <div class="modal" id="modalEditarDocumento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Documento</h3>
+                <button class="btn-close" onclick="fecharModal('modalEditarDocumento')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarDocumento">
+                    <input type="hidden" id="editarDocumentoId">
+                    <div id="camposEditarDocumento">
+                        <!-- Campos dinâmicos baseados no documento -->
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModal('modalEditarDocumento')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Configurações -->
+    <div class="modal" id="modalConfiguracoes">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Configurações dos Documentos Fiscais</h3>
+                <button class="btn-close" onclick="fecharModal('modalConfiguracoes')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="abrirTab('empresa')">Empresa</button>
+                    <button class="tab-button" onclick="abrirTab('certificado')">Certificado</button>
+                    <button class="tab-button" onclick="abrirTab('sefaz')">SEFAZ</button>
+                    <button class="tab-button" onclick="abrirTab('banco')">Banco</button>
+                </div>
+                
+                <div id="tab-empresa" class="tab-content active">
+                    <h4>Dados da Empresa</h4>
+                    <form id="formEmpresa">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="razaoSocial">Razão Social:</label>
+                                <input type="text" id="razaoSocial" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nomeFantasia">Nome Fantasia:</label>
+                                <input type="text" id="nomeFantasia">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cnpj">CNPJ:</label>
+                                <input type="text" id="cnpj" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="inscricaoEstadual">Inscrição Estadual:</label>
+                                <input type="text" id="inscricaoEstadual">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="endereco">Endereço:</label>
+                            <input type="text" id="endereco" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bairro">Bairro:</label>
+                                <input type="text" id="bairro">
+                            </div>
+                            <div class="form-group">
+                                <label for="cidade">Cidade:</label>
+                                <input type="text" id="cidade" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="uf">UF:</label>
+                                <select id="uf" required>
+                                    <option value="">Selecione</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AP">AP</option>
+                                    <option value="AM">AM</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MT">MT</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MG">MG</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PR">PR</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RS">RS</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SP">SP</option>
+                                    <option value="SE">SE</option>
+                                    <option value="TO">TO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cep">CEP:</label>
+                                <input type="text" id="cep">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone">Telefone:</label>
+                                <input type="text" id="telefone">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail:</label>
+                                <input type="email" id="email">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="tab-certificado" class="tab-content">
+                    <h4>Certificado Digital</h4>
+                    <form id="formCertificado">
+                        <div class="form-group">
+                            <label for="numeroCertificado">Número do Certificado:</label>
+                            <input type="text" id="numeroCertificado">
+                        </div>
+                        <div class="form-group">
+                            <label for="validadeCertificado">Validade:</label>
+                            <input type="date" id="validadeCertificado">
+                        </div>
+                        <div class="form-group">
+                            <label for="senhaCertificado">Senha:</label>
+                            <input type="password" id="senhaCertificado">
+                        </div>
+                    </form>
+                </div>
+
+                <div id="tab-sefaz" class="tab-content">
+                    <h4>Configurações SEFAZ</h4>
+                    <form id="formSefaz">
+                        <div class="form-group">
+                            <label for="ambienteSefaz">Ambiente:</label>
+                            <select id="ambienteSefaz">
+                                <option value="homologacao">Homologação</option>
+                                <option value="producao">Produção</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="csc">CSC (Código de Segurança do Contribuinte):</label>
+                            <input type="text" id="csc">
+                        </div>
+                        <div class="form-group">
+                            <label for="cscId">CSC ID:</label>
+                            <input type="text" id="cscId">
+                        </div>
+                    </form>
+                </div>
+
+                <div id="tab-banco" class="tab-content">
+                    <h4>Configurações Bancárias</h4>
+                    <form id="formBanco">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="codigoBanco">Código do Banco:</label>
+                                <input type="text" id="codigoBanco">
+                            </div>
+                            <div class="form-group">
+                                <label for="nomeBanco">Nome do Banco:</label>
+                                <input type="text" id="nomeBanco">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="agencia">Agência:</label>
+                                <input type="text" id="agencia">
+                            </div>
+                            <div class="form-group">
+                                <label for="conta">Conta:</label>
+                                <input type="text" id="conta">
+                            </div>
+                            <div class="form-group">
+                                <label for="carteira">Carteira:</label>
+                                <input type="text" id="carteira">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModal('modalConfiguracoes')">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="salvarConfiguracoes()">
+                        <i class="fas fa-save"></i> Salvar Configurações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualizar Documento -->
+    <div class="modal" id="modalVisualizarDocumento">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-eye"></i> Visualizar Documento</h3>
+                <button class="btn-close" onclick="fecharModal('modalVisualizarDocumento')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="conteudoVisualizarDocumento">
+                    <!-- Conteúdo do documento será carregado aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="common.js"></script>
+    <script src="auth-system.js"></script>
+    <script src="notifications.js"></script>
+    <script src="loading-system.js"></script>
+    <script src="confirmation-system.js"></script>
+    <script src="fiscal-documents.js"></script>
+    <script src="documentos-fiscais.js"></script>
+</body>
+</html>
