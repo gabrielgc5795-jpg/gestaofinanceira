@@ -1,6 +1,6 @@
 /**
  * @fileoverview Funções compartilhadas entre todas as páginas do sistema
- * @author Grill Gestão
+ * @author Gestão Financeira
  * @version 1.0.0
  */
 

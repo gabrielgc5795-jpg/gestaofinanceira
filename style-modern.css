@@ -177,6 +177,7 @@ body {
   color: var(--gray-500);
   font-weight: 400;
   margin: 0;
+  display: none;
 }
 
 .header-stats {
@@ -322,6 +323,13 @@ body {
   margin: 0 auto;
   padding: var(--spacing-6);
   min-height: calc(100vh - 140px);
+}
+
+/* ===== CONTEÚDO PRINCIPAL ===== */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-6);
 }
 
 /* ===== HEADER DE PÁGINA ===== */

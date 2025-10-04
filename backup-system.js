@@ -249,7 +249,7 @@ class BackupSystem {
    * Formata backup como texto legível
    */
   formatBackupAsText(backup) {
-    let text = `BACKUP GRILL GESTÃO\n`;
+    let text = `BACKUP GESTÃO FINANCEIRA\n`;
     text += `==================\n\n`;
     text += `Nome: ${backup.name}\n`;
     text += `Data: ${new Date(backup.timestamp).toLocaleString('pt-BR')}\n`;

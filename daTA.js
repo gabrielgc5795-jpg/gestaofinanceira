@@ -1,6 +1,6 @@
 /**
  * @fileoverview Gerenciamento de dados e localStorage do sistema
- * @author Grill Gestão
+ * @author Gestão Financeira
  * @version 1.0.0
  */
 
