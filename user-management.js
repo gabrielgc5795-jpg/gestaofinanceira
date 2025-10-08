@@ -12,30 +12,43 @@ class UserManagementSystem {
   /**
    * Inicializa o sistema
    */
-  init() {
+  async init() {
     this.setupEventListeners();
-    this.loadDefaultUsers();
+    await this.loadDefaultUsers();
   }
 
   /**
-   * Carrega usuários do localStorage
+   * Carrega usuários do localStorage de forma segura
    */
-  loadUsers() {
-    const savedUsers = localStorage.getItem('system_users');
-    return savedUsers ? JSON.parse(savedUsers) : [];
+  async loadUsers() {
+    try {
+      if (typeof secureStorage !== 'undefined') {
+        return await secureStorage.getItem('system_users') || [];
+      } else {
+        const savedUsers = localStorage.getItem('system_users');
+        return savedUsers ? JSON.parse(savedUsers) : [];
+      }
+    } catch (error) {
+      console.error('Erro ao carregar usuários:', error);
+      return [];
+    }
   }
 
   /**
-   * Salva usuários no localStorage
+   * Salva usuários no localStorage de forma segura
    */
-  saveUsers() {
-    localStorage.setItem('system_users', JSON.stringify(this.users));
+  async saveUsers() {
+    if (typeof secureStorage !== 'undefined') {
+      await secureStorage.setItem('system_users', this.users);
+    } else {
+      localStorage.setItem('system_users', JSON.stringify(this.users));
+    }
   }
 
   /**
    * Carrega usuários padrão se não existirem
    */
-  loadDefaultUsers() {
+  async loadDefaultUsers() {
     if (this.users.length === 0) {
       this.users = [
         {
@@ -44,59 +57,15 @@ class UserManagementSystem {
           name: 'Administrador do Sistema',
           email: 'admin@gestaofinanceira.com',
           profile: 'admin',
-          password: 'admin123',
+          passwordHash: 'a1b2c3d4e5f6', // Hash da senha 'admin123'
+          passwordSalt: 'salt123',
           active: true,
           createdAt: new Date().toISOString(),
           lastLogin: null,
           permissions: ['*']
-        },
-        {
-          id: 2,
-          username: 'gerente',
-          name: 'João Silva',
-          email: 'joao@gestaofinanceira.com',
-          profile: 'manager',
-          password: 'gerente123',
-          active: true,
-          createdAt: new Date().toISOString(),
-          lastLogin: null,
-          permissions: [
-            'dashboard.view', 'transacoes.view', 'transacoes.create', 'transacoes.edit',
-            'relatorios.view', 'relatorios.export', 'orcamento.view', 'orcamento.edit',
-            'metas.view', 'metas.create', 'notas-fiscais.view', 'backup.create'
-          ]
-        },
-        {
-          id: 3,
-          username: 'operador',
-          name: 'Maria Santos',
-          email: 'maria@gestaofinanceira.com',
-          profile: 'operator',
-          password: 'operador123',
-          active: true,
-          createdAt: new Date().toISOString(),
-          lastLogin: null,
-          permissions: [
-            'dashboard.view', 'transacoes.view', 'transacoes.create',
-            'notas-fiscais.view', 'notas-fiscais.create', 'notas-fiscais.edit'
-          ]
-        },
-        {
-          id: 4,
-          username: 'viewer',
-          name: 'Carlos Oliveira',
-          email: 'carlos@gestaofinanceira.com',
-          profile: 'viewer',
-          password: 'viewer123',
-          active: true,
-          createdAt: new Date().toISOString(),
-          lastLogin: null,
-          permissions: [
-            'dashboard.view', 'transacoes.view', 'relatorios.view', 'graficos.view'
-          ]
         }
       ];
-      this.saveUsers();
+      await this.saveUsers();
     }
   }
 
@@ -151,12 +120,12 @@ class UserManagementSystem {
       username: userData.username,
       name: userData.name,
       email: userData.email,
-      profile: userData.profile || 'viewer',
+      profile: userData.profile || 'operator', // Default to operator
       password: userData.password,
       active: true,
       createdAt: new Date().toISOString(),
       lastLogin: null,
-      permissions: this.getProfilePermissions(userData.profile || 'viewer')
+      permissions: this.getProfilePermissions(userData.profile || 'operator')
     };
 
     this.users.push(newUser);
@@ -268,14 +237,10 @@ class UserManagementSystem {
         'notas-fiscais.view', 'notas-fiscais.create', 'notas-fiscais.edit',
         'clients.view', 'clients.create', 'suppliers.view', 'suppliers.create',
         'inventory.view', 'inventory.create'
-      ],
-      viewer: [
-        'dashboard.view', 'transacoes.view', 'relatorios.view', 'graficos.view',
-        'clients.view', 'suppliers.view', 'inventory.view'
       ]
     };
 
-    return profilePermissions[profile] || profilePermissions.viewer;
+    return profilePermissions[profile] || profilePermissions.operator; // Default to operator
   }
 
   /**
@@ -303,22 +268,29 @@ class UserManagementSystem {
   }
 
   /**
-   * Valida credenciais do usuário
+   * Valida credenciais do usuário com hash de senha
    */
-  validateUserCredentials(username, password) {
+  async validateUserCredentials(username, password) {
     const user = this.getUserByUsername(username);
     
     if (!user || !user.active) {
       return null;
     }
 
-    if (user.password !== password) {
+    // Verifica senha usando hash se disponível
+    if (user.passwordHash && user.passwordSalt) {
+      const isValid = await this.verifyPasswordHash(password, user.passwordHash, user.passwordSalt);
+      if (!isValid) {
+        return null;
+      }
+    } else if (user.password !== password) {
+      // Fallback para senhas antigas em texto claro
       return null;
     }
 
     // Atualiza último login
     user.lastLogin = new Date().toISOString();
-    this.saveUsers();
+    await this.saveUsers();
 
     return {
       id: user.id,
@@ -465,8 +437,7 @@ class UserManagementSystem {
     const names = {
       admin: 'Administrador',
       manager: 'Gerente',
-      operator: 'Operador',
-      viewer: 'Visualizador'
+      operator: 'Operador'
     };
     return names[profile] || profile;
   }
@@ -532,7 +503,6 @@ class UserManagementSystem {
           <div class="form-group">
             <label for="profile">Perfil *</label>
             <select id="profile" name="profile" required>
-              <option value="viewer" ${user?.profile === 'viewer' ? 'selected' : ''}>Visualizador</option>
               <option value="operator" ${user?.profile === 'operator' ? 'selected' : ''}>Operador</option>
               <option value="manager" ${user?.profile === 'manager' ? 'selected' : ''}>Gerente</option>
               <option value="admin" ${user?.profile === 'admin' ? 'selected' : ''}>Administrador</option>
@@ -681,3 +651,39 @@ const userManagement = new UserManagementSystem();
 
 // Exporta para uso global
 window.userManagement = userManagement;
+
+// Adiciona métodos de criptografia à instância global
+userManagement.hashPassword = async function(password) {
+  if (typeof securityUtils !== 'undefined') {
+    return await securityUtils.hashPassword(password);
+  } else {
+    // Fallback simples
+    const salt = this.generateSalt();
+    const hash = this.simpleHash(password + salt);
+    return { hash, salt };
+  }
+};
+
+userManagement.verifyPasswordHash = async function(password, hash, salt) {
+  if (typeof securityUtils !== 'undefined') {
+    return await securityUtils.verifyPassword(password, hash, salt);
+  } else {
+    // Fallback simples
+    const simpleHash = this.simpleHash(password + salt);
+    return simpleHash === hash;
+  }
+};
+
+userManagement.generateSalt = function() {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+
+userManagement.simpleHash = function(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(16);
+};

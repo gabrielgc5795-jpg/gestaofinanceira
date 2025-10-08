@@ -45,17 +45,26 @@
     <button class="tab-button active" onclick="navegarPara('dashboard')">
       <span>Dashboard</span>
     </button>
-    <button class="tab-button" onclick="navegarPara('transacoes')">
-      <span>Transações</span>
+    <button class="tab-button" onclick="navegarPara('agenda')">
+      <span>Agenda</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('clientes-fornecedores')" data-permission="clients.view">
+      <span>Clientes/Fornecedores</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('configuracoes')">
+      <span>Configurações</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('controle-financeiro')" data-permission="financial.view">
+      <span>Financeiro</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('documentos-fiscais')" data-permission="fiscal.*">
+      <span>Documentos Fiscais</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('estoque')" data-permission="inventory.view">
+      <span>Estoque</span>
     </button>
     <button class="tab-button" onclick="navegarPara('graficos')">
       <span>Gráficos</span>
-    </button>
-    <button class="tab-button" onclick="navegarPara('relatorios')">
-      <span>Relatórios</span>
-    </button>
-    <button class="tab-button" onclick="navegarPara('orcamento')">
-      <span>Orçamento</span>
     </button>
     <button class="tab-button" onclick="navegarPara('metas')">
       <span>Metas</span>
@@ -63,29 +72,20 @@
     <button class="tab-button" onclick="navegarPara('notas-fiscais')">
       <span>Notas Fiscais</span>
     </button>
-    <button class="tab-button" onclick="navegarPara('documentos-fiscais')" data-permission="fiscal.*">
-      <span>Documentos Fiscais</span>
-    </button>
-    <button class="tab-button" onclick="navegarPara('controle-financeiro')" data-permission="financial.view">
-      <span>Financeiro</span>
-    </button>
-    <button class="tab-button" onclick="navegarPara('estoque')" data-permission="inventory.view">
-      <span>Estoque</span>
-    </button>
-    <button class="tab-button" onclick="navegarPara('clientes-fornecedores')" data-permission="clients.view">
-      <span>Clientes/Fornecedores</span>
+    <button class="tab-button" onclick="navegarPara('orcamento')">
+      <span>Orçamento</span>
     </button>
     <button class="tab-button" onclick="navegarPara('ordens-servico')" data-permission="service-orders.view">
       <span>Ordens de Serviço</span>
     </button>
-    <button class="tab-button" onclick="navegarPara('agenda')" data-permission="agenda.view">
-      <span>Agenda</span>
+    <button class="tab-button" onclick="navegarPara('relatorios')">
+      <span>Relatórios</span>
+    </button>
+    <button class="tab-button" onclick="navegarPara('transacoes')">
+      <span>Transações</span>
     </button>
     <button class="tab-button" onclick="navegarPara('usuarios')" data-permission="users.view">
       <span>Usuários</span>
-    </button>
-    <button class="tab-button" onclick="navegarPara('configuracoes')">
-      <span>Configurações</span>
     </button>
   </nav>
 
@@ -98,18 +98,23 @@
           <div class="stat-card">
             <h3>Controle Total</h3>
             <p>Gerencie suas receitas e despesas com facilidade</p>
+            <button class="primary-btn mt-4" onclick="navegarPara('transacoes')">Ir para Transações</button>
           </div>
           <div class="stat-card">
             <h3>Análises Visuais</h3>
             <p>Visualize seus dados com gráficos e relatórios</p>
+            <button class="primary-btn mt-4" onclick="navegarPara('graficos')">Ver Gráficos</button>
+            <button class="secondary-btn mt-2" onclick="navegarPara('relatorios')">Ver Relatórios</button>
           </div>
           <div class="stat-card">
             <h3>Metas Financeiras</h3>
             <p>Defina e acompanhe suas metas de economia</p>
+            <button class="primary-btn mt-4" onclick="navegarPara('metas')">Ir para Metas</button>
           </div>
           <div class="stat-card">
             <h3>Notas Fiscais</h3>
             <p>Cadastre e gerencie suas notas fiscais</p>
+            <button class="primary-btn mt-4" onclick="navegarPara('notas-fiscais')">Ir para Notas Fiscais</button>
           </div>
         </div>
         <div class="welcome-actions">
@@ -122,22 +127,27 @@
           <div class="stat-card">
             <h3>Gestão de pessoas e RH</h3>
             <p>Ponto, folha e desempenho</p>
+            <button class="secondary-btn mt-2" onclick="navegarPara('usuarios')">Gestão de Usuários</button>
           </div>
           <div class="stat-card">
             <h3>Precificação e Custos</h3>
             <p>Simulação de custos e margens</p>
+            <button class="secondary-btn mt-2" onclick="navegarPara('orcamento')">Ir para Orçamento</button>
           </div>
           <div class="stat-card">
             <h3>Gestão de Filiais</h3>
             <p>Controle por unidades</p>
+            <button class="secondary-btn mt-2" onclick="navegarPara('clientes-fornecedores')">Clientes/Fornecedores</button>
           </div>
           <div class="stat-card">
             <h3>Comunicação Interna</h3>
             <p>Chat, mural e documentos</p>
+            <button class="secondary-btn mt-2" onclick="navegarPara('dashboard')">Ir para Dashboard</button>
           </div>
           <div class="stat-card">
             <h3>Segurança e Acessos</h3>
             <p>Controle por usuário</p>
+            <button class="secondary-btn mt-2" onclick="navegarPara('configuracoes')">Configurações</button>
           </div>
         </div>
       </div>

@@ -210,8 +210,9 @@ function alterarStatusNota(id) {
 }
 
 // Função para remover nota fiscal
-function removerNotaFiscal(id) {
-  if (confirm("Tem certeza que deseja remover esta nota fiscal?")) {
+async function removerNotaFiscal(id) {
+  const confirmed = await confirmDelete('esta nota fiscal');
+  if (confirmed) {
     notasFiscais = notasFiscais.filter(n => n.id !== id);
     salvarNotasFiscais();
     atualizarListaNotasFiscais();

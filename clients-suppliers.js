@@ -1065,7 +1065,7 @@ class ClientsSuppliersSystem {
       );
 
       if (confirmed) {
-        this.removeClient(id);
+        this._removeClient(id); // Corrigido: chama o método de remoção simples
         showSuccess('Cliente removido com sucesso!');
         this.renderClientsInterface();
       }
@@ -1086,7 +1086,7 @@ class ClientsSuppliersSystem {
       );
 
       if (confirmed) {
-        this.removeSupplier(id);
+        this._removeSupplier(id); // Corrigido: chama o método de remoção simples
         showSuccess('Fornecedor removido com sucesso!');
         this.renderSuppliersInterface();
       }
@@ -1131,6 +1131,34 @@ class ClientsSuppliersSystem {
       <strong>Status:</strong> ${supplier.status}<br>
       <strong>Observações:</strong> ${supplier.notes || 'Nenhuma'}
     `);
+  }
+
+  /**
+   * Remoção simples de cliente (soft delete)
+   */
+  _removeClient(id) {
+    const client = this.getClientById(id);
+    if (!client) {
+      throw new Error('Cliente não encontrado');
+    }
+    client.status = 'deleted';
+    client.updatedAt = new Date().toISOString();
+    this.saveClients();
+    return client;
+  }
+
+  /**
+   * Remoção simples de fornecedor (soft delete)
+   */
+  _removeSupplier(id) {
+    const supplier = this.getSupplierById(id);
+    if (!supplier) {
+      throw new Error('Fornecedor não encontrado');
+    }
+    supplier.status = 'deleted';
+    supplier.updatedAt = new Date().toISOString();
+    this.saveSuppliers();
+    return supplier;
   }
 }
 

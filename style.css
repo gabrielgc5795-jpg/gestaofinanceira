@@ -1150,3 +1150,101 @@ button:focus,
     border: 1px solid var(--gray-300);
   }
 }
+
+/* ===== RESPONSIVIDADE EXTRA PARA MONITORES PEQUENOS ===== */
+@media (max-width: 900px) {
+  .container, .content, .main, .dashboard, .page-content {
+    max-width: 100vw;
+    padding-left: var(--spacing-2);
+    padding-right: var(--spacing-2);
+  }
+  .sidebar, .menu-lateral {
+    position: static;
+    width: 100%;
+    min-width: unset;
+    max-width: 100vw;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .navbar, .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+}
+
+@media (max-width: 768px) {
+  .container, .content, .main, .dashboard, .page-content {
+    padding-left: var(--spacing-1);
+    padding-right: var(--spacing-1);
+  }
+  .sidebar, .menu-lateral {
+    display: none;
+  }
+  .navbar, .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .card, .form-card, .modal-content {
+    padding: var(--spacing-3);
+  }
+  .page-header h1, .page-header h2 {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 90%;
+  }
+  .container, .content, .main, .dashboard, .page-content {
+    padding: 0 var(--spacing-1);
+  }
+  .card, .form-card, .modal-content {
+    padding: var(--spacing-2);
+  }
+  .page-header h1, .page-header h2 {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 85%;
+  }
+  .container, .content, .main, .dashboard, .page-content {
+    padding: 0 2px;
+  }
+  .card, .form-card, .modal-content {
+    padding: var(--spacing-1);
+  }
+  .page-header h1, .page-header h2 {
+    font-size: var(--font-size-sm);
+  }
+  .btn, button, input, select, textarea {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+}
+
+/* Tabelas responsivas */
+@media (max-width: 900px) {
+  table, .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table thead, table tbody, table tr, table th, table td {
+    display: table;
+    width: 100%;
+  }
+}
+
+/* Imagens responsivas */
+img, .img-responsive {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

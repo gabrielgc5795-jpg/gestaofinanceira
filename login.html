@@ -4,6 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Gestão Financeira</title>
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; 
+                 script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; 
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                 font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                 img-src 'self' data:;
+                 connect-src 'self';
+                 object-src 'none';
+                 base-uri 'self';
+                 form-action 'self';">
+  
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
   <link rel="stylesheet" href="style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,9 +41,20 @@
       border-radius: 1rem;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       overflow: hidden;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
-      animation: slideUp 0.5s ease-out;
+      animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
     }
 
     @keyframes slideUp {
@@ -98,8 +128,17 @@
       border: 2px solid var(--gray-200);
       border-radius: 0.5rem;
       font-size: 1rem;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       background: var(--bg-primary);
+      position: relative;
+    }
+
+    .form-field input:valid {
+      border-color: var(--success-color);
+    }
+
+    .form-field input:invalid:not(:placeholder-shown) {
+      border-color: var(--error-color);
     }
 
     .form-field input:focus {
@@ -142,7 +181,7 @@
 
     .login-btn {
       width: 100%;
-      background: var(--primary-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
       color: white;
       border: none;
       padding: 0.875rem;
@@ -150,23 +189,46 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
       margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
     }
 
     .login-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(34, 139, 34, 0.3);
     }
 
     .login-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
+      background: var(--gray-400);
+    }
+
+    .login-btn:disabled::before {
+      display: none;
     }
 
     .demo-users {
@@ -267,6 +329,263 @@
       border-color: var(--gray-600);
     }
 
+    /* Estados de loading */
+    .login-btn.loading {
+      pointer-events: none;
+    }
+
+    .login-btn .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Feedback visual */
+    .form-field.success input {
+      border-color: var(--success-color);
+      background-color: var(--success-light);
+    }
+
+    .form-field.error input {
+      border-color: var(--error-color);
+      background-color: var(--error-light);
+    }
+
+    .form-field .field-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .form-field.success .field-icon.success {
+      opacity: 1;
+      color: var(--success-color);
+    }
+
+    .form-field.error .field-icon.error {
+      opacity: 1;
+      color: var(--error-color);
+    }
+
+    /* Animações de entrada */
+    .form-field {
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .form-field:nth-child(1) { animation-delay: 0.1s; }
+    .form-field:nth-child(2) { animation-delay: 0.2s; }
+    .form-field:nth-child(3) { animation-delay: 0.3s; }
+    .form-field:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Melhorias de acessibilidade */
+    .form-field input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.1);
+    }
+
+    .form-field input:focus + i {
+      color: var(--primary-color);
+    }
+
+    /* Modal de recuperação de senha */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: var(--bg-primary);
+      border-radius: 1rem;
+      max-width: 400px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: var(--gray-800);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray-500);
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      color: var(--gray-800);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .success-message {
+      text-align: center;
+      padding: 2rem 0;
+    }
+
+    .success-message i {
+      font-size: 3rem;
+      color: var(--success-color);
+      margin-bottom: 1rem;
+    }
+
+    .success-message p {
+      margin: 0.5rem 0;
+      color: var(--gray-700);
+    }
+
+    .text-muted {
+      color: var(--gray-500) !important;
+      font-size: 0.875rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .primary-btn {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .primary-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .secondary-btn {
+      background: var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    .secondary-btn:hover {
+      background: var(--gray-300);
+    }
+
+    /* Modal de 2FA */
+    .2fa-info {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .2fa-info i {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .2fa-info p {
+      color: var(--gray-700);
+      margin: 0;
+    }
+
+    .2fa-help {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .2fa-help p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+
+    .2fa-help i {
+      margin-right: 0.5rem;
+      color: var(--info-color);
+    }
+
+    #2fa-code {
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 0.5rem;
+      font-weight: 600;
+    }
+
+    /* Indicador de força da senha */
+    .password-strength {
+      margin-top: 0.5rem;
+      height: 4px;
+      background: var(--gray-200);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .strength-weak { background: var(--error-color); width: 25%; }
+    .strength-fair { background: var(--warning-color); width: 50%; }
+    .strength-good { background: var(--info-color); width: 75%; }
+    .strength-strong { background: var(--success-color); width: 100%; }
+
     @media (max-width: 480px) {
       .login-container {
         margin: 0;
@@ -292,7 +611,7 @@
       <div class="login-logo">
         Gestão Financeira
       </div>
-      <h1 class="login-title">Gestão Financeira</h1>
+      <h1 class="login-title">Acesso ao Sistema</h1>
       <p class="login-subtitle">Sistema Profissional de Gestão</p>
     </div>
 
@@ -301,14 +620,26 @@
       <div class="form-field">
         <label for="username">Usuário</label>
         <div class="input-group">
-          <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+          <i class="fas fa-user"></i>
+          <input type="text" id="username" name="username" placeholder="Digite seu usuário" required autocomplete="username">
+          <i class="fas fa-check-circle field-icon success"></i>
+          <i class="fas fa-exclamation-circle field-icon error"></i>
         </div>
       </div>
 
       <div class="form-field">
         <label for="password">Senha</label>
         <div class="input-group">
-          <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" name="password" placeholder="Digite sua senha" required autocomplete="current-password">
+          <i class="fas fa-check-circle field-icon success"></i>
+          <i class="fas fa-exclamation-circle field-icon error"></i>
+          <button type="button" class="password-toggle" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="password-strength" id="password-strength" style="display: none;">
+          <div class="password-strength-bar"></div>
         </div>
       </div>
 
@@ -317,54 +648,90 @@
           <input type="checkbox" id="remember-me" name="rememberMe">
           <span>Lembrar de mim</span>
         </label>
-        <a href="#" class="forgot-password">Esqueci a senha</a>
+        <a href="#" class="forgot-password" onclick="showPasswordRecovery()">Esqueci a senha</a>
       </div>
 
-      <button type="submit" class="login-btn">
+      <button type="submit" class="login-btn" id="login-btn">
         <span class="btn-text">
+          <i class="fas fa-sign-in-alt"></i>
           Entrar
         </span>
+        <div class="spinner" style="display: none;"></div>
       </button>
 
       <!-- Usuários Demo -->
-      <div class="demo-users">
-        <h4>
-          Usuários de Demonstração
-        </h4>
-        
-        <div class="demo-user" onclick="fillDemoUser('admin', 'admin123')">
-          <div class="demo-user-info">
-            <div class="demo-user-name">Administrador</div>
-            <div class="demo-user-profile">Acesso total ao sistema</div>
-          </div>
-          <div class="demo-user-badge profile-admin">ADMIN</div>
-        </div>
+      <!-- Removido bloco de usuários demonstrativos -->
+    </form>
 
-        <div class="demo-user" onclick="fillDemoUser('gerente', 'gerente123')">
-          <div class="demo-user-info">
-            <div class="demo-user-name">João Silva</div>
-            <div class="demo-user-profile">Gerente financeiro</div>
-          </div>
-          <div class="demo-user-badge profile-manager">GERENTE</div>
+    <!-- Modal de Recuperação de Senha -->
+    <div id="password-recovery-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Recuperar Senha</h3>
+          <button class="modal-close" onclick="hidePasswordRecovery()">&times;</button>
         </div>
-
-        <div class="demo-user" onclick="fillDemoUser('operador', 'operador123')">
-          <div class="demo-user-info">
-            <div class="demo-user-name">Maria Santos</div>
-            <div class="demo-user-profile">Operadora do sistema</div>
+        <div class="modal-body">
+          <div id="recovery-step-1">
+            <p>Digite seu email para receber instruções de recuperação de senha.</p>
+            <div class="form-field">
+              <label for="recovery-email">Email</label>
+              <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="recovery-email" placeholder="Digite seu email" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn secondary-btn" onclick="hidePasswordRecovery()">Cancelar</button>
+              <button type="button" class="btn primary-btn" onclick="sendRecoveryEmail()">Enviar</button>
+            </div>
           </div>
-          <div class="demo-user-badge profile-operator">OPERADOR</div>
-        </div>
-
-        <div class="demo-user" onclick="fillDemoUser('viewer', 'viewer123')">
-          <div class="demo-user-info">
-            <div class="demo-user-name">Carlos Oliveira</div>
-            <div class="demo-user-profile">Apenas visualização</div>
+          
+          <div id="recovery-step-2" style="display: none;">
+            <div class="success-message">
+              <i class="fas fa-check-circle"></i>
+              <p>Instruções de recuperação enviadas para seu email!</p>
+              <p class="text-muted">Verifique sua caixa de entrada e spam.</p>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn primary-btn" onclick="hidePasswordRecovery()">Fechar</button>
+            </div>
           </div>
-          <div class="demo-user-badge profile-viewer">VIEWER</div>
         </div>
       </div>
-    </form>
+    </div>
+
+    <!-- Modal de 2FA -->
+    <div id="2fa-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Verificação em Duas Etapas</h3>
+          <button class="modal-close" onclick="hide2FAModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="2fa-info">
+            <i class="fas fa-shield-alt"></i>
+            <p>Digite o código de 6 dígitos enviado para seu dispositivo.</p>
+          </div>
+          <div class="form-field">
+            <label for="2fa-code">Código de Verificação</label>
+            <div class="input-group">
+              <i class="fas fa-key"></i>
+              <input type="text" id="2fa-code" placeholder="000000" maxlength="6" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn secondary-btn" onclick="hide2FAModal()">Cancelar</button>
+            <button type="button" class="btn primary-btn" onclick="verify2FACode()">Verificar</button>
+          </div>
+          <div class="2fa-help">
+            <p class="text-muted">
+              <i class="fas fa-info-circle"></i>
+              Não recebeu o código? Verifique sua caixa de entrada e spam.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Informações da Versão -->
     <div class="version-info">
@@ -373,6 +740,12 @@
     </div>
   </div>
 
+  <!-- Sistemas de Segurança -->
+  <script src="security-config.js"></script>
+  <script src="security-utils.js"></script>
+  <script src="secure-storage.js"></script>
+  <script src="security-migration.js"></script>
+  
   <!-- Sistemas Profissionais -->
   <script src="validation.js"></script>
   <script src="notifications.js"></script>
@@ -418,6 +791,242 @@
       });
     }
 
+    // Toggle de visibilidade da senha
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.querySelector('.password-toggle i');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.className = 'fas fa-eye-slash';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.className = 'fas fa-eye';
+      }
+    }
+
+    // Funções de recuperação de senha
+    function showPasswordRecovery() {
+      document.getElementById('password-recovery-modal').style.display = 'flex';
+      document.getElementById('recovery-email').focus();
+    }
+
+    function hidePasswordRecovery() {
+      document.getElementById('password-recovery-modal').style.display = 'none';
+      // Reset do modal
+      document.getElementById('recovery-step-1').style.display = 'block';
+      document.getElementById('recovery-step-2').style.display = 'none';
+      document.getElementById('recovery-email').value = '';
+    }
+
+    async function sendRecoveryEmail() {
+      const email = document.getElementById('recovery-email').value;
+      
+      if (!email) {
+        if (typeof showError === 'function') {
+          showError('Email obrigatório', 'Digite seu email para continuar.');
+        }
+        return;
+      }
+
+      try {
+        const result = await initiatePasswordRecovery(email);
+        
+        if (result.success) {
+          // Mostra passo 2
+          document.getElementById('recovery-step-1').style.display = 'none';
+          document.getElementById('recovery-step-2').style.display = 'block';
+        } else {
+          throw new Error(result.error || 'Erro ao enviar email');
+        }
+        
+      } catch (error) {
+        if (typeof showError === 'function') {
+          showError('Erro na recuperação', error.message);
+        }
+      }
+    }
+
+    // Funções de 2FA
+    function show2FAModal() {
+      document.getElementById('2fa-modal').style.display = 'flex';
+      document.getElementById('2fa-code').focus();
+    }
+
+    function hide2FAModal() {
+      document.getElementById('2fa-modal').style.display = 'none';
+      document.getElementById('2fa-code').value = '';
+    }
+
+    async function verify2FACode() {
+      const code = document.getElementById('2fa-code').value;
+      
+      if (!code || code.length !== 6) {
+        if (typeof showError === 'function') {
+          showError('Código inválido', 'Digite o código de 6 dígitos.');
+        }
+        return;
+      }
+
+      try {
+        const result = await complete2FALogin(code);
+        
+        if (result.success) {
+          hide2FAModal();
+          
+          if (typeof showSuccess === 'function') {
+            showSuccess('Login realizado!', `Bem-vindo, ${result.user.name}!`);
+          }
+          
+          // Redireciona para dashboard
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1000);
+        } else {
+          throw new Error(result.error || 'Código inválido');
+        }
+        
+      } catch (error) {
+        if (typeof showError === 'function') {
+          showError('Erro na verificação', error.message);
+        }
+        document.getElementById('2fa-code').value = '';
+        document.getElementById('2fa-code').focus();
+      }
+    }
+
+    // Validação em tempo real com sanitização
+    function setupRealTimeValidation() {
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      
+      usernameInput.addEventListener('input', function() {
+        // Sanitiza entrada
+        const sanitized = sanitizeInput(this.value);
+        if (sanitized !== this.value) {
+          this.value = sanitized;
+        }
+        
+        const isValid = validateTextInput(this.value, 50) && this.value.length >= 3;
+        validateField(this, isValid);
+      });
+      
+      passwordInput.addEventListener('input', function() {
+        // Sanitiza entrada
+        const sanitized = sanitizeInput(this.value);
+        if (sanitized !== this.value) {
+          this.value = sanitized;
+        }
+        
+        const isValid = validatePassword(this.value);
+        validateField(this, isValid);
+        updatePasswordStrength(this.value);
+      });
+      
+      // Previne caracteres perigosos
+      [usernameInput, passwordInput].forEach(input => {
+        input.addEventListener('keypress', function(e) {
+          // Bloqueia caracteres potencialmente perigosos
+          const dangerousChars = /[<>"'&]/;
+          if (dangerousChars.test(e.key)) {
+            e.preventDefault();
+            showError('Caractere inválido', 'Caracteres especiais não são permitidos.');
+          }
+        });
+        
+        input.addEventListener('paste', function(e) {
+          // Sanitiza conteúdo colado
+          setTimeout(() => {
+            const sanitized = sanitizeInput(this.value);
+            if (sanitized !== this.value) {
+              this.value = sanitized;
+              showInfo('Conteúdo sanitizado', 'Caracteres inválidos foram removidos.');
+            }
+          }, 10);
+        });
+      });
+    }
+
+    function validateField(input, isValid) {
+      const field = input.closest('.form-field');
+      
+      if (isValid) {
+        field.classList.remove('error');
+        field.classList.add('success');
+        
+        // Remove mensagens de erro
+        const errorMsg = field.querySelector('.error-message');
+        if (errorMsg) {
+          errorMsg.remove();
+        }
+      } else {
+        field.classList.remove('success');
+        field.classList.add('error');
+        
+        // Adiciona mensagem de erro se não existir
+        if (!field.querySelector('.error-message')) {
+          const errorMsg = document.createElement('div');
+          errorMsg.className = 'error-message';
+          errorMsg.textContent = getFieldErrorMessage(input);
+          field.appendChild(errorMsg);
+        }
+      }
+    }
+    
+    function getFieldErrorMessage(input) {
+      if (input.id === 'username') {
+        return 'Usuário deve ter entre 3 e 50 caracteres, apenas letras, números e pontos.';
+      } else if (input.id === 'password') {
+        return 'Senha deve ter pelo menos 12 caracteres, incluindo maiúsculas, minúsculas, números e símbolos.';
+      }
+      return 'Campo inválido';
+    }
+
+    function updatePasswordStrength(password) {
+      const strengthBar = document.getElementById('password-strength');
+      const strengthBarFill = strengthBar.querySelector('.password-strength-bar');
+      
+      if (password.length === 0) {
+        strengthBar.style.display = 'none';
+        return;
+      }
+      
+      strengthBar.style.display = 'block';
+      
+      let strength = 0;
+      if (password.length >= 12) strength++;
+      if (password.length >= 16) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+      
+      strengthBarFill.className = 'password-strength-bar';
+      if (strength <= 2) strengthBarFill.classList.add('strength-weak');
+      else if (strength <= 3) strengthBarFill.classList.add('strength-fair');
+      else if (strength <= 4) strengthBarFill.classList.add('strength-good');
+      else strengthBarFill.classList.add('strength-strong');
+    }
+
+    // Loading state
+    function setLoadingState(isLoading) {
+      const btn = document.getElementById('login-btn');
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+      
+      if (isLoading) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        spinner.style.display = 'block';
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btnText.style.display = 'flex';
+        spinner.style.display = 'none';
+      }
+    }
+
     // Inicialização
     document.addEventListener('DOMContentLoaded', function() {
       // Carrega tema
@@ -429,6 +1038,9 @@
         return;
       }
       
+      // Configura validação em tempo real
+      setupRealTimeValidation();
+      
       // Configura validação do formulário
       setupFormValidation('#login-form', loginValidationRules, {
         onSubmit: async function(form) {
@@ -437,23 +1049,61 @@
           const password = formData.get('password');
           const rememberMe = formData.get('rememberMe') === 'on';
 
-          try {
-            // Realiza login com loading
-            const result = await withLoading(async () => {
-              return await login(username, password, rememberMe);
-            }, {
-              button: form.querySelector('.login-btn'),
-              title: 'Autenticando...',
-              message: 'Verificando credenciais'
-            });
+          // Ativa estado de loading
+          setLoadingState(true);
 
-            if (!result.success) {
-              throw new Error(result.error);
+          try {
+            // Validação rigorosa de entrada
+            if (!validateTextInput(username, 50) || username.length < 3) {
+              throw new Error('Usuário inválido. Use apenas letras, números e pontos.');
+            }
+            
+            if (!validatePassword(password)) {
+              throw new Error('Senha deve ter pelo menos 12 caracteres, incluindo maiúsculas, minúsculas, números e símbolos.');
+            }
+            
+            // Sanitiza entradas
+            const sanitizedUsername = sanitizeInput(username);
+            const sanitizedPassword = sanitizeInput(password);
+            
+            // Verifica se 2FA está habilitado
+            if (is2FAEnabled(sanitizedUsername)) {
+              // Login com 2FA
+              const result = await withLoading(async () => {
+                return await loginWith2FA(sanitizedUsername, sanitizedPassword, rememberMe);
+              }, {
+                button: form.querySelector('.login-btn'),
+                title: 'Enviando código...',
+                message: 'Preparando verificação em duas etapas'
+              });
+
+              if (result.success && result.requires2FA) {
+                // Mostra modal de 2FA
+                hidePasswordRecovery();
+                show2FAModal();
+                return;
+              }
+            } else {
+              // Login normal
+              const result = await withLoading(async () => {
+                return await login(sanitizedUsername, sanitizedPassword, rememberMe);
+              }, {
+                button: form.querySelector('.login-btn'),
+                title: 'Autenticando...',
+                message: 'Verificando credenciais'
+              });
+
+              if (!result.success) {
+                throw new Error(result.error);
+              }
             }
 
           } catch (error) {
             // Erro já é tratado no sistema de auth
             console.error('Erro no login:', error);
+          } finally {
+            // Desativa estado de loading
+            setLoadingState(false);
           }
         }
       });

@@ -190,8 +190,9 @@ function adicionarValorMeta(metaId) {
   }
 }
 
-function removerMeta(metaId) {
-  if (confirm("Tem certeza que deseja remover esta meta?")) {
+async function removerMeta(metaId) {
+  const confirmed = await confirmDelete('esta meta');
+  if (confirmed) {
     metas = metas.filter(m => m.id !== metaId);
     localStorage.setItem("metas", JSON.stringify(metas));
     atualizarListaMetas();
